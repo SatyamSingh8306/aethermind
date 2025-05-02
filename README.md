@@ -17,7 +17,7 @@
 
 In a world where **85% of repetitive tasks** still burden teams, AetherMind delivers **AI agents that think, adapt, and act**. We’re not just automating workflows—we’re building digital teammates that learn your business and grow with it.
 
-![AI Agent Architecture Diagram](https://via.placeholder.com/800x400.png?text=AI+Agent+Architecture+Demo)
+![AI Agent Architecture Diagram](./src/assets/architecture.png)
 
 ---
 
