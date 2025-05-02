@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import BackgroundAnimation from '../components/BackgroundAnimation'
+import ProfilePhoto from '../assets/profile_photo.jpg'
 
 const AboutPage = () => {
   useEffect(() => {
@@ -105,7 +106,7 @@ const AboutPage = () => {
           <div className="features-grid">
             <div className="feature-card">
               <div className="about-image">
-                <img src="https://github.com/SatyamSingh8306/aethermind/blob/main/src/assets/profile_photo.jpg" alt="Team Member" />
+                <img src={ProfilePhoto} alt="Team Member" />
               </div>
               <h3 className="feature-title">Satyam Singh</h3>
               <p className="feature-description">
@@ -125,7 +126,7 @@ const AboutPage = () => {
             
             <div className="feature-card">
               <div className="about-image">
-                <img src="https://github.com/SatyamSingh8306/aethermind/blob/main/src/assets/profile_photo.jpg" alt="Team Member" />
+                <img src={ProfilePhoto} alt="Team Member" />
               </div>
               <h3 className="feature-title">Satyam Singh</h3>
               <p className="feature-description">
@@ -135,7 +136,7 @@ const AboutPage = () => {
             
             <div className="feature-card">
               <div className="about-image">
-                <img src="https://github.com/SatyamSingh8306/aethermind/blob/main/src/assets/profile_photo.jpg" alt="Team Member" />
+                <img src={ProfilePhoto} alt="Team Member" />
               </div>
               <h3 className="feature-title">Agent</h3>
               <p className="feature-description">
