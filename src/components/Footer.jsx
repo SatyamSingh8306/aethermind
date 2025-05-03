@@ -17,7 +17,7 @@ const Footer = () => {
             <a href="#" className="social-icon">
               <i className="fab fa-twitter"></i>
             </a>
-            <a href="#" className="social-icon">
+            <a href="https://www.linkedin.com/company/aether-mind/" className="social-icon">
               <i className="fab fa-linkedin"></i>
             </a>
             <a href="#" className="social-icon">
