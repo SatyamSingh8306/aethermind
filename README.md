@@ -114,7 +114,7 @@ We’re open-source friendly! Check out our:
 **Founder & Lead Architect**  
 Satyam Singh  
 📧 [satyamsingh7734@gmail.com](mailto:satyamsingh7734@gmail.com)  
-🔗 [LinkedIn](https://linkedin.com/in/satyam8306) | [GitHub](https://github.com/SatyamSingh8306)  
+🔗 [LinkedIn](https://www.linkedin.com/company/aether-mind/) | [GitHub](https://github.com/SatyamSingh8306)  
 
 **Business Partnerships**  
 🌐 [partners@aethermind.ai](mailto:partners@aethermind.ai)  
