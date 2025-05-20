@@ -1,0 +1,31 @@
+/* Footer Social Icons */
+.footer-social {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .social-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: var(--text-light);
+    font-size: 1.2rem;
+  }
+  
+  .social-icon:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-3px);
+    color: white;
+  }
+  
+  /* Make sure Font Awesome icons are properly centered */
+  .social-icon svg {
+    width: 1em;
+    height: 1em;
+  }

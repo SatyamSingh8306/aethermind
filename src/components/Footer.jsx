@@ -1,7 +1,15 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faTwitter, 
+  faLinkedin, 
+  faGithub, 
+  faInstagram 
+} from '@fortawesome/free-brands-svg-icons';
+import "../styles/footer.css";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer">
@@ -14,17 +22,17 @@ const Footer = () => {
             Empowering businesses with intelligent AI solutions for automation and innovation.
           </p>
           <div className="footer-social">
-            <a href="#" className="social-icon">
-              <i className="fab fa-twitter"></i>
+            <a href="#" className="social-icon" aria-label="Twitter">
+              <FontAwesomeIcon icon={faTwitter} />
             </a>
-            <a href="https://www.linkedin.com/company/aether-mind/" className="social-icon">
-              <i className="fab fa-linkedin"></i>
+            <a href="https://www.linkedin.com/company/aether-mind/" className="social-icon" aria-label="LinkedIn">
+              <FontAwesomeIcon icon={faLinkedin} />
             </a>
-            <a href="#" className="social-icon">
-              <i className="fab fa-github"></i>
+            <a href="#" className="social-icon" aria-label="GitHub">
+              <FontAwesomeIcon icon={faGithub} />
             </a>
-            <a href="#" className="social-icon">
-              <i className="fab fa-instagram"></i>
+            <a href="#" className="social-icon" aria-label="Instagram">
+              <FontAwesomeIcon icon={faInstagram} />
             </a>
           </div>
         </div>
@@ -67,7 +75,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
