@@ -2,11 +2,13 @@ import { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Logo from './Logo';
+import { FaUser, FaBell, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import "../styles/Navbar.css"
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated, user, logout } = useContext(AuthContext);
 
@@ -37,11 +39,28 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
+    setUserMenuOpen(false);
   };
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
+
+  const toggleUserMenu = () => {
+    setUserMenuOpen(!userMenuOpen);
+  };
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuOpen && !event.target.closest('.user-menu-container')) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [userMenuOpen]);
 
   return (
     <>
@@ -96,28 +115,40 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
-          </ul>
-
-          <div className="nav-auth">
-            {isAuthenticated ? (
-              <div className="user-menu-container">
-                <div className="user-info">
-                  <span className="user-avatar">
-                    {user?.name?.charAt(0).toUpperCase()}
-                  </span>
-                  <span className="user-name">{user?.name}</span>
-                  <button onClick={handleLogout} className="logout-btn">
-                    Logout
-                  </button>
+            <li className="nav-item nav-auth">
+              {isAuthenticated ? (
+                <div className="user-menu-container">
+                  <div className="user-info" onClick={toggleUserMenu}>
+                    <span className="user-avatar">{user?.name?.charAt(0).toUpperCase()}</span>
+                    <span className="user-name">{user?.name}</span>
+                  </div>
+                  
+                  {userMenuOpen && (
+                    <div className="user-dropdown">
+                      <Link to="/dashboard" className="dropdown-item">
+                        <FaUser /> Dashboard
+                      </Link>
+                      <Link to="/profile" className="dropdown-item">
+                        <FaUser /> Profile
+                      </Link>
+                      <Link to="/settings" className="dropdown-item">
+                        <FaCog /> Settings
+                      </Link>
+                      <div className="dropdown-divider"></div>
+                      <button onClick={handleLogout} className="dropdown-item logout">
+                        <FaSignOutAlt /> Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ) : (
-              <div className="auth-buttons">
-                <Link to="/login" className="login-btn">Login</Link>
-                <Link to="/register" className="register-btn">Register</Link>
-              </div>
-            )}
-          </div>
+              ) : (
+                <div className="auth-buttons">
+                  <Link to="/login" className="login-btn">Login</Link>
+                  <Link to="/register" className="register-btn">Register</Link>
+                </div>
+              )}
+            </li>
+          </ul>
         </div>
       </nav>
       <div 

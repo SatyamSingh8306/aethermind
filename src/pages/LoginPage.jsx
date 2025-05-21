@@ -14,7 +14,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [loginAttempts, setLoginAttempts] = useState(0);
   
-  const { login, isAuthenticated } = useContext(AuthContext);
+  const { login, isAuthenticated, error: authError, clearError } = useContext(AuthContext);
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -32,6 +32,13 @@ const LoginPage = () => {
       }
     }
   }, [isAuthenticated, navigate]);
+
+  // Clear auth error when component unmounts
+  useEffect(() => {
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -81,6 +88,7 @@ const LoginPage = () => {
     
     setLoading(true);
     setErrors({});
+    clearError();
     
     try {
       if (loginAttempts >= 3) {
@@ -97,9 +105,6 @@ const LoginPage = () => {
           role: user.role,
           isAuthenticated: true
         };
-        
-        // Store in localStorage
-        localStorage.setItem('user', JSON.stringify(userDataToStore));
         
         // Call login function from AuthContext
         const loginSuccess = await login(userDataToStore);
@@ -138,8 +143,10 @@ const LoginPage = () => {
           <p>Welcome back to AetherMind</p>
         </div>
         
-        {errors.form && (
-          <div className="error-message">{errors.form}</div>
+        {(errors.form || authError) && (
+          <div className="error-message">
+            {errors.form || authError}
+          </div>
         )}
         
         <form onSubmit={handleSubmit} className="login-form">
@@ -153,6 +160,7 @@ const LoginPage = () => {
               onChange={handleChange}
               placeholder="Enter your email"
               className={errors.email ? 'error' : ''}
+              disabled={loading || loginAttempts >= 3}
             />
             {errors.email && <div className="input-error">{errors.email}</div>}
           </div>
@@ -167,6 +175,7 @@ const LoginPage = () => {
               onChange={handleChange}
               placeholder="Enter your password"
               className={errors.password ? 'error' : ''}
+              disabled={loading || loginAttempts >= 3}
             />
             {errors.password && <div className="input-error">{errors.password}</div>}
           </div>
@@ -184,7 +193,14 @@ const LoginPage = () => {
             className="login-button" 
             disabled={loading || loginAttempts >= 3}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? (
+              <>
+                <span className="loading-spinner"></span>
+                Signing in...
+              </>
+            ) : (
+              'Sign In'
+            )}
           </button>
 
           {loginAttempts > 0 && (

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import BackgroundAnimation from '../components/BackgroundAnimation'
 import ProfilePhoto from '../assets/profile_photo.jpg'
 import TeamPhoto from '../assets/team_photo.png'
-import './AboutPage.css'
+import '../styles/AboutPage.css'
 
 const AboutPage = () => {
   useEffect(() => {

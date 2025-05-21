@@ -126,6 +126,23 @@
     font-weight: bold;
   }
   
+  .loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 0.5rem;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
   .error-message {
     background: rgba(213, 0, 0, 0.1);
     color: var(--error);
@@ -138,11 +155,24 @@
     align-items: center;
     justify-content: center;
     gap: 0.8rem;
+    animation: shake 0.5s ease-in-out;
   }
   
-  .error-message::before {
-    content: '⚠';
-    font-size: 1.2rem;
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  
+  .login-attempts {
+    margin-top: 1rem;
+    text-align: center;
+    color: var(--error);
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    background: rgba(213, 0, 0, 0.1);
+    border-radius: 4px;
+    border: 1px solid rgba(213, 0, 0, 0.2);
   }
   
   .form-options {
@@ -317,11 +347,4 @@
       padding: 0.9rem;
       font-size: 1rem;
     }
-  }
-  
-  .login-attempts {
-    margin-top: 10px;
-    text-align: center;
-    color: #ff4444;
-    font-size: 0.9em;
   }
