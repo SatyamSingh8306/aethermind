@@ -28,7 +28,7 @@ const Footer = () => {
             <a href="https://www.linkedin.com/company/aether-mind/" className="social-icon" aria-label="LinkedIn">
               <FontAwesomeIcon icon={faLinkedin} />
             </a>
-            <a href="#" className="social-icon" aria-label="GitHub">
+            <a href="https://github.com/SatyamSingh8306/aethermind" className="social-icon" aria-label="GitHub">
               <FontAwesomeIcon icon={faGithub} />
             </a>
             <a href="#" className="social-icon" aria-label="Instagram">
