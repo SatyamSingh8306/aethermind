@@ -72,7 +72,7 @@ const ProductsPage = () => {
                 <h3>{product.name}</h3>
                 <p className="product-category">{product.category}</p>
                 <p className="product-description">{product.description}</p>
-                <p className="product-price">${product.price.toFixed(2)}</p>
+                <p className="product-price">{product.price.toFixed(2)}</p>
                 <Link to={`/products/${product.id}`} className="view-details-btn">
                   View Details
                 </Link>

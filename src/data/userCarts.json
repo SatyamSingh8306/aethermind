@@ -1,0 +1,35 @@
+{
+  "userCarts": [
+    {
+      "userId": 1,
+      "cartItems": [
+        {
+          "id": 1,
+          "name": "AI Chatbot Integration",
+          "price": 29.99,
+          "image": "/images/product-chatbot.jpg",
+          "quantity": 2
+        },
+        {
+          "id": 3,
+          "name": "Neural Network API",
+          "price": 39.99,
+          "image": "/images/product-neural.jpg",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "userId": 2,
+      "cartItems": [
+        {
+          "id": 2,
+          "name": "Predictive Analytics Suite",
+          "price": 49.99,
+          "image": "/images/product-analytics.jpg",
+          "quantity": 1
+        }
+      ]
+    }
+  ]
+} 

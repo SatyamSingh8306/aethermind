@@ -20,6 +20,8 @@ import { AuthProvider } from './context/AuthContext'
 import Dashboard from './pages/Dashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import NotFound from './pages/NotFound'
+import { CartProvider } from './context/CartContext'
+import Cart from './pages/Cart'
 import './App.css'
 
 function App() {
@@ -44,33 +46,36 @@ function App() {
 
   return (
     <AuthProvider>
-      <Router>
-        <div className="app-container">
-          <Navbar />
-          <main>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/products" element={<ProductsPage />} />
-              <Route path="/products/:id" element={<ProductDetailPage />} />
-              <Route path="/services" element={<ServicesPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<TermsConditions />} />
-              <Route path="/blog" element={<BlogPage />} />
-              <Route path="/documentation" element={<DocumentationPage />} />
-              <Route path="/faq" element={<FAQPage />} />
-              <Route path="/support" element={<SupportPage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/admin-dashboard" element={<AdminDashboard />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
+      <CartProvider>
+        <Router>
+          <div className="app-container">
+            <Navbar />
+            <main>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/products" element={<ProductsPage />} />
+                <Route path="/products/:id" element={<ProductDetailPage />} />
+                <Route path="/services" element={<ServicesPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsConditions />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/documentation" element={<DocumentationPage />} />
+                <Route path="/faq" element={<FAQPage />} />
+                <Route path="/support" element={<SupportPage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </CartProvider>
     </AuthProvider>
   )
 }
