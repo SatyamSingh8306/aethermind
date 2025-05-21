@@ -10,7 +10,16 @@ import ProductsPage from './pages/ProductsPage'
 import ProductDetailPage from './pages/ProductDetailPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsConditions from './pages/TermsConditions'
+import BlogPage from './pages/BlogPage'
+import DocumentationPage from './pages/DocumentationPage'
+import FAQPage from './pages/FAQPage'
+import SupportPage from './pages/SupportPage'
 import { AuthProvider } from './context/AuthContext'
+import Dashboard from './pages/Dashboard'
+import AdminDashboard from './pages/AdminDashboard'
+import NotFound from './pages/NotFound'
 import './App.css'
 
 function App() {
@@ -48,6 +57,15 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsConditions />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/documentation" element={<DocumentationPage />} />
+              <Route path="/faq" element={<FAQPage />} />
+              <Route path="/support" element={<SupportPage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
           <Footer />

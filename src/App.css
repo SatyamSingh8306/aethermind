@@ -67,6 +67,10 @@ main {
   justify-content: center;
   gap: 1rem;
   margin-top: 2rem;
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .primary-btn {
@@ -276,6 +280,13 @@ main {
     flex-direction: column;
     width: 100%;
     max-width: 300px;
+    gap: 1rem;
+  }
+
+  .hero-cta-group .primary-btn,
+  .hero-cta-group .secondary-btn {
+    width: 100%;
+    text-align: center;
   }
 
   .footer-bottom {
@@ -322,6 +333,19 @@ main {
   }
 
   .section-subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+/* Tablet-specific styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hero-cta-group {
+    max-width: 500px;
+  }
+
+  .hero-cta-group .primary-btn,
+  .hero-cta-group .secondary-btn {
+    padding: 0.8rem 1.5rem;
     font-size: 1.1rem;
   }
 }

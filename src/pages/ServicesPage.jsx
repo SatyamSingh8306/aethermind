@@ -1,11 +1,56 @@
-import { useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
+import { FaRobot, FaChartLine, FaBrain, FaCogs, FaCheck, FaArrowRight } from 'react-icons/fa'
 import BackgroundAnimation from '../components/BackgroundAnimation'
+import '../styles/ServicesPage.css'
 
 const ServicesPage = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+  const services = [
+    {
+      icon: <FaRobot />,
+      title: "AI-Powered Automation",
+      description: "Transform your business operations with intelligent automation solutions that learn and adapt to your needs.",
+      benefits: [
+        "Reduce manual tasks by up to 80%",
+        "24/7 operational efficiency",
+        "Error-free processing",
+        "Scalable automation workflows"
+      ]
+    },
+    {
+      icon: <FaBrain />,
+      title: "AI Chatbots & Assistants",
+      description: "Create intelligent conversational agents that understand context, learn from interactions, and provide personalized assistance.",
+      benefits: [
+        "Natural language understanding",
+        "Multi-channel deployment",
+        "Continuous learning capabilities",
+        "Seamless human handoff"
+      ]
+    },
+    {
+      icon: <FaChartLine />,
+      title: "Intelligent Analytics",
+      description: "Unlock actionable insights from your data with advanced AI analytics and predictive modeling.",
+      benefits: [
+        "Real-time data processing",
+        "Predictive trend analysis",
+        "Custom reporting dashboards",
+        "Automated insights generation"
+      ]
+    },
+    {
+      icon: <FaCogs />,
+      title: "Custom AI Solutions",
+      description: "Tailored AI solutions designed to address your specific business challenges and opportunities.",
+      benefits: [
+        "Industry-specific expertise",
+        "End-to-end implementation",
+        "Ongoing support & maintenance",
+        "Scalable architecture"
+      ]
+    }
+  ]
 
   return (
     <div className="services-page">
@@ -13,134 +58,52 @@ const ServicesPage = () => {
       
       {/* Hero Section */}
       <section className="services-hero">
-        <div className="container">
-          <h1 className="section-title">Our AI Services</h1>
-          <p className="section-subtitle">
-            Discover how AetherMind's cutting-edge AI solutions can transform your business operations,
-            enhance productivity, and drive innovation.
-          </p>
-        </div>
+        <h1 className="section-title">AI Solutions for Tomorrow's Challenges</h1>
+        <p className="section-subtitle">
+          Discover how our cutting-edge AI solutions can transform your business operations, 
+          enhance customer experiences, and drive innovation in your industry.
+        </p>
       </section>
 
       {/* Services Section */}
       <section className="services-section">
-        <div className="container">
-          <div className="service-cards">
-            <div className="service-card" id="automation">
+        <div className="service-cards">
+          {services.map((service, index) => (
+            <div key={index} className="service-card">
               <div className="service-card-header">
-                <div className="service-icon">🤖</div>
-                <h3 className="service-title">AI-Powered Automation</h3>
+                <div className="service-icon">
+                  {service.icon}
+                </div>
+                <h2 className="service-title">{service.title}</h2>
               </div>
-              <p className="service-description">
-                Eliminate repetitive tasks and streamline workflows with our intelligent automation 
-                solutions that adapt to your unique business needs.
-              </p>
+              <p className="service-description">{service.description}</p>
               <div className="service-benefits">
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>Reduce operational costs by up to 40%</span>
-                </div>
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>Free up employee time for higher-value work</span>
-                </div>
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>Minimize human error and inconsistencies</span>
-                </div>
+                {service.benefits.map((benefit, idx) => (
+                  <div key={idx} className="benefit-item">
+                    <span className="benefit-icon">✓</span>
+                    <span>{benefit}</span>
+                  </div>
+                ))}
               </div>
-              <Link to="/contact" className="secondary-btn">Learn More</Link>
+              <Link to="/contact" className="secondary-btn">
+                Learn More <FaArrowRight />
+              </Link>
             </div>
-
-            <div className="service-card" id="chatbot">
-              <div className="service-card-header">
-                <div className="service-icon">💬</div>
-                <h3 className="service-title">AI Chatbots & Assistants</h3>
-              </div>
-              <p className="service-description">
-                Deploy intelligent conversational agents that understand context, provide accurate responses,
-                and enhance customer engagement across all channels.
-              </p>
-              <div className="service-benefits">
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>24/7 customer support and engagement</span>
-                </div>
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>Personalized user interactions</span>
-                </div>
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>Seamless integration with existing platforms</span>
-                </div>
-              </div>
-              <Link to="/contact" className="secondary-btn">Learn More</Link>
-            </div>
-
-            <div className="service-card" id="analytics">
-              <div className="service-card-header">
-                <div className="service-icon">📊</div>
-                <h3 className="service-title">Intelligent Analytics</h3>
-              </div>
-              <p className="service-description">
-                Transform raw data into actionable insights with our AI-powered analytics solutions 
-                that identify patterns, trends, and opportunities.
-              </p>
-              <div className="service-benefits">
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>Data-driven decision making</span>
-                </div>
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>Predictive analytics and forecasting</span>
-                </div>
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>Custom dashboards and reporting</span>
-                </div>
-              </div>
-              <Link to="/contact" className="secondary-btn">Learn More</Link>
-            </div>
-
-            <div className="service-card" id="custom">
-              <div className="service-card-header">
-                <div className="service-icon">🛠️</div>
-                <h3 className="service-title">Custom AI Solutions</h3>
-              </div>
-              <p className="service-description">
-                We develop tailored AI solutions designed specifically for your unique business 
-                challenges and objectives, leveraging cutting-edge technologies.
-              </p>
-              <div className="service-benefits">
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>Tailored to your specific industry</span>
-                </div>
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>End-to-end development and implementation</span>
-                </div>
-                <div className="benefit-item">
-                  <span className="benefit-icon">✓</span>
-                  <span>Ongoing support and optimization</span>
-                </div>
-              </div>
-              <Link to="/contact" className="secondary-btn">Learn More</Link>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="cta-section">
-        <div className="container">
-          <div className="cta-content">
-            <h2>Ready to Transform Your Business with AI?</h2>
-            <p>Schedule a free consultation with our experts to discover how AetherMind can elevate your business.</p>
-            <Link to="/contact" className="primary-btn">Get Started</Link>
-          </div>
+        <div className="cta-content">
+          <h2>Ready to Transform Your Business?</h2>
+          <p>
+            Schedule a consultation with our AI experts to discover how we can help you 
+            leverage the power of artificial intelligence to achieve your business goals.
+          </p>
+          <Link to="/contact" className="primary-btn">
+            Get Started <FaArrowRight />
+          </Link>
         </div>
       </section>
     </div>

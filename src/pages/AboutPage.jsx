@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import BackgroundAnimation from '../components/BackgroundAnimation'
 import ProfilePhoto from '../assets/profile_photo.jpg'
+import TeamPhoto from '../assets/team_photo.png'
+import './AboutPage.css'
 
 const AboutPage = () => {
   useEffect(() => {
@@ -45,7 +47,7 @@ const AboutPage = () => {
               </p>
             </div>
             <div className="about-image">
-              <img src="/api/placeholder/600/400" alt="AetherMind Team" />
+              <img src={TeamPhoto} alt="AetherMind Team" />
             </div>
           </div>
         </div>
@@ -95,7 +97,7 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Team Section (placeholder for now) */}
+      {/* Team Section */}
       <section className="team-section" id="team">
         <div className="container">
           <h2 className="section-title">Our Team</h2>
@@ -104,44 +106,40 @@ const AboutPage = () => {
           </p>
           
           <div className="features-grid">
-            <div className="feature-card">
-              <div className="about-image">
-                <img src={ProfilePhoto} alt="Team Member" />
+            <div className="team-card">
+              <div className="team-image">
+                <img src={ProfilePhoto} alt="Satyam Singh" />
               </div>
-              <h3 className="feature-title">Satyam Singh</h3>
-              <p className="feature-description">
-                Co-founder & CEO
-              </p>
+              <h3>Satyam Singh</h3>
+              <p>Co-founder & CEO</p>
+              <p>Visionary leader with expertise in AI strategy and business development.</p>
             </div>
             
-            <div className="feature-card">
-              <div className="about-image">
-                <img src="https://static.vecteezy.com/system/resources/thumbnails/036/442/721/small_2x/ai-generated-portrait-of-a-young-man-no-facial-expression-facing-the-camera-isolated-white-background-ai-generative-photo.jpg" alt="Team Member" />
+            <div className="team-card">
+              <div className="team-image">
+                <img src="https://static.vecteezy.com/system/resources/thumbnails/036/442/721/small_2x/ai-generated-portrait-of-a-young-man-no-facial-expression-facing-the-camera-isolated-white-background-ai-generative-photo.jpg" alt="Shivam" />
               </div>
-              <h3 className="feature-title">Shivam</h3>
-              <p className="feature-description">
-                Co-founder & CTO
-              </p>
+              <h3>Shivam</h3>
+              <p>Co-founder & CTO</p>
+              <p>Technical expert specializing in AI architecture and system design.</p>
             </div>
             
-            <div className="feature-card">
-              <div className="about-image">
-                <img src={ProfilePhoto} alt="Team Member" />
+            <div className="team-card">
+              <div className="team-image">
+                <img src={ProfilePhoto} alt="Lead AI Engineer" />
               </div>
-              <h3 className="feature-title">Satyam Singh</h3>
-              <p className="feature-description">
-                Lead AI Engineer
-              </p>
+              <h3>Lead AI Engineer</h3>
+              <p>AI Research Lead</p>
+              <p>Pioneering new approaches in machine learning and neural networks.</p>
             </div>
             
-            <div className="feature-card">
-              <div className="about-image">
-                <img src={ProfilePhoto} alt="Team Member" />
+            <div className="team-card">
+              <div className="team-image">
+                <img src={ProfilePhoto} alt="Product Head" />
               </div>
-              <h3 className="feature-title">Agent</h3>
-              <p className="feature-description">
-                Head of Product
-              </p>
+              <h3>Product Head</h3>
+              <p>Head of Product</p>
+              <p>Driving product innovation and user experience excellence.</p>
             </div>
           </div>
         </div>

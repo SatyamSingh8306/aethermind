@@ -1,0 +1,80 @@
+.logo-container {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-light);
+  transition: all 0.3s ease;
+}
+
+.logo-container:hover {
+  transform: translateY(-1px);
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.logo-text::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.logo-container:hover .logo-text::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Size variants */
+.logo-icon.small {
+  width: 24px;
+  height: 24px;
+}
+
+.logo-icon.medium {
+  width: 32px;
+  height: 32px;
+}
+
+.logo-icon.large {
+  width: 48px;
+  height: 48px;
+}
+
+.logo-text.small {
+  font-size: 1.25rem;
+}
+
+.logo-text.medium {
+  font-size: 1.5rem;
+}
+
+.logo-text.large {
+  font-size: 1.75rem;
+} 

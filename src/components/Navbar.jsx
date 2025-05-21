@@ -1,13 +1,14 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import Logo from './Logo';
 import "../styles/Navbar.css"
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { currentUser, logout } = useContext(AuthContext);
+  const { isAuthenticated, user, logout } = useContext(AuthContext);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,12 +23,10 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when location changes
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location]);
 
-  // Handle body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.classList.add('menu-open');
@@ -48,9 +47,9 @@ const Navbar = () => {
     <>
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
         <div className="navbar-container">
-          <Link to="/" className="navbar-logo">
-            Aether<span>Mind</span>
-          </Link>
+          <div className="navbar-logo">
+            <Logo size="medium" />
+          </div>
 
           <div className="menu-icon" onClick={toggleMobileMenu}>
             <span className={`hamburger ${mobileMenuOpen ? 'open' : ''}`}></span>
@@ -97,30 +96,16 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
-            <li className="nav-item mobile-auth">
-              {currentUser ? (
-                <div className="user-menu-container">
-                  <div className="user-info">
-                    <span className="user-name">{currentUser.name}</span>
-                    <button onClick={handleLogout} className="logout-btn">
-                      Logout
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="auth-buttons">
-                  <Link to="/login" className="login-btn">Login</Link>
-                  <Link to="/register" className="register-btn">Register</Link>
-                </div>
-              )}
-            </li>
           </ul>
 
-          <div className="nav-auth desktop-auth">
-            {currentUser ? (
+          <div className="nav-auth">
+            {isAuthenticated ? (
               <div className="user-menu-container">
                 <div className="user-info">
-                  <span className="user-name">{currentUser.name}</span>
+                  <span className="user-avatar">
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </span>
+                  <span className="user-name">{user?.name}</span>
                   <button onClick={handleLogout} className="logout-btn">
                     Logout
                   </button>

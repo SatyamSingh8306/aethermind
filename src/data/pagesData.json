@@ -1,0 +1,177 @@
+{
+  "blog": {
+    "hero": {
+      "title": "AetherMind Blog",
+      "subtitle": "Insights, updates, and stories from our team"
+    },
+    "categories": [
+      "All Posts",
+      "Product Updates",
+      "AI & Technology",
+      "Use Cases",
+      "Company News"
+    ],
+    "posts": [
+      {
+        "id": 1,
+        "title": "Introducing AetherMind's New AI Features",
+        "excerpt": "Discover the latest AI capabilities we've added to enhance your experience.",
+        "date": "March 15, 2024",
+        "category": "Product Updates",
+        "readTime": "5 min read"
+      },
+      {
+        "id": 2,
+        "title": "The Future of AI in Business",
+        "excerpt": "Exploring how artificial intelligence is transforming modern business operations.",
+        "date": "March 10, 2024",
+        "category": "AI & Technology",
+        "readTime": "7 min read"
+      },
+      {
+        "id": 3,
+        "title": "Success Story: How Company X Transformed Their Workflow",
+        "excerpt": "A detailed case study of how one company achieved remarkable results with AetherMind.",
+        "date": "March 5, 2024",
+        "category": "Use Cases",
+        "readTime": "6 min read"
+      }
+    ]
+  },
+  "documentation": {
+    "sections": {
+      "getting-started": {
+        "title": "Getting Started",
+        "content": [
+          {
+            "title": "Quick Start Guide",
+            "content": "Learn how to set up and start using AetherMind in minutes."
+          },
+          {
+            "title": "Installation",
+            "content": "Step-by-step guide to installing and configuring AetherMind."
+          },
+          {
+            "title": "Basic Concepts",
+            "content": "Understanding the core concepts and terminology used in AetherMind."
+          }
+        ]
+      },
+      "api-reference": {
+        "title": "API Reference",
+        "content": [
+          {
+            "title": "Authentication",
+            "content": "Learn about authentication methods and security best practices."
+          },
+          {
+            "title": "Endpoints",
+            "content": "Comprehensive documentation of all available API endpoints."
+          },
+          {
+            "title": "Rate Limits",
+            "content": "Understanding API rate limits and best practices for handling them."
+          }
+        ]
+      },
+      "tutorials": {
+        "title": "Tutorials",
+        "content": [
+          {
+            "title": "Building Your First Project",
+            "content": "A hands-on tutorial to help you build your first project with AetherMind."
+          },
+          {
+            "title": "Advanced Features",
+            "content": "Learn how to leverage advanced features and capabilities."
+          },
+          {
+            "title": "Best Practices",
+            "content": "Guidelines and best practices for optimal usage of AetherMind."
+          }
+        ]
+      }
+    }
+  },
+  "faq": {
+    "hero": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find answers to common questions about AetherMind"
+    },
+    "categories": {
+      "general": [
+        {
+          "question": "What is AetherMind?",
+          "answer": "AetherMind is an advanced AI platform that helps businesses automate and optimize their operations through intelligent automation and data analysis."
+        },
+        {
+          "question": "How do I get started?",
+          "answer": "Getting started is easy! Simply sign up for an account, follow our quick start guide, and you'll be up and running in minutes."
+        }
+      ],
+      "pricing": [
+        {
+          "question": "What pricing plans are available?",
+          "answer": "We offer several pricing tiers to suit different needs, from individual users to enterprise solutions. Visit our pricing page for detailed information."
+        },
+        {
+          "question": "Is there a free trial?",
+          "answer": "Yes, we offer a 14-day free trial with full access to all features. No credit card required."
+        }
+      ],
+      "technical": [
+        {
+          "question": "What are the system requirements?",
+          "answer": "AetherMind is a cloud-based solution that works on any modern web browser. No special hardware is required."
+        },
+        {
+          "question": "How secure is my data?",
+          "answer": "We take security seriously. All data is encrypted in transit and at rest, and we follow industry best practices for data protection."
+        }
+      ]
+    }
+  },
+  "support": {
+    "hero": {
+      "title": "Support Center",
+      "subtitle": "We're here to help you succeed with AetherMind"
+    },
+    "channels": [
+      {
+        "title": "Email Support",
+        "description": "Get in touch with our support team via email",
+        "contact": "support@aethermind.com",
+        "responseTime": "Within 24 hours"
+      },
+      {
+        "title": "Live Chat",
+        "description": "Chat with our support team in real-time",
+        "contact": "Available 24/7",
+        "responseTime": "Instant"
+      },
+      {
+        "title": "Phone Support",
+        "description": "Speak directly with our support team",
+        "contact": "+1 (555) 123-4567",
+        "responseTime": "Within 1 hour"
+      }
+    ],
+    "resources": [
+      {
+        "title": "Documentation",
+        "description": "Comprehensive guides and API documentation",
+        "link": "/documentation"
+      },
+      {
+        "title": "FAQ",
+        "description": "Find answers to common questions",
+        "link": "/faq"
+      },
+      {
+        "title": "Community Forum",
+        "description": "Connect with other AetherMind users",
+        "link": "/forum"
+      }
+    ]
+  }
+} 

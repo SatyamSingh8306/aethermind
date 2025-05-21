@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/LoginPage.css';
+import userData from '../data/users.json';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -11,13 +12,26 @@ const LoginPage = () => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [loginAttempts, setLoginAttempts] = useState(0);
   
-  const { login } = useContext(AuthContext);
+  const { login, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    // If user is already authenticated, redirect to appropriate dashboard
+    if (isAuthenticated) {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        if (userData.role === 'admin') {
+          navigate('/admin-dashboard');
+        } else {
+          navigate('/dashboard');
+        }
+      }
+    }
+  }, [isAuthenticated, navigate]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +40,6 @@ const LoginPage = () => {
       [name]: value
     }));
     
-    // Clear error when user types
     if (errors[name]) {
       setErrors(prevErrors => ({
         ...prevErrors,
@@ -38,14 +51,12 @@ const LoginPage = () => {
   const validateForm = () => {
     const newErrors = {};
     
-    // Email validation
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email address is invalid';
     }
     
-    // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
@@ -55,6 +66,13 @@ const LoginPage = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
+  const verifyCredentials = (email, password) => {
+    return userData.users.find(user => 
+      user.email.toLowerCase() === email.toLowerCase() && 
+      user.password === password
+    ) || null;
+  };
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,13 +80,46 @@ const LoginPage = () => {
     if (!validateForm()) return;
     
     setLoading(true);
+    setErrors({});
     
     try {
-      // For demonstration, using a mock login implementation
-      // In a real app, you would call your authentication API here
-      await login(formData.email, formData.password);
-      navigate('/');
+      if (loginAttempts >= 3) {
+        throw new Error('Too many login attempts. Please try again later.');
+      }
+
+      const user = verifyCredentials(formData.email, formData.password);
+      
+      if (user) {
+        const userDataToStore = {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          isAuthenticated: true
+        };
+        
+        // Store in localStorage
+        localStorage.setItem('user', JSON.stringify(userDataToStore));
+        
+        // Call login function from AuthContext
+        const loginSuccess = await login(userDataToStore);
+        
+        if (loginSuccess) {
+          // Redirect based on role
+          if (user.role === 'admin') {
+            navigate('/admin-dashboard');
+          } else {
+            navigate('/dashboard');
+          }
+        } else {
+          throw new Error('Login failed. Please try again.');
+        }
+      } else {
+        setLoginAttempts(prev => prev + 1);
+        throw new Error('Invalid email or password');
+      }
     } catch (error) {
+      console.error('Login error:', error);
       setErrors({
         form: error.message || 'Login failed. Please try again.'
       });
@@ -131,10 +182,16 @@ const LoginPage = () => {
           <button 
             type="submit" 
             className="login-button" 
-            disabled={loading}
+            disabled={loading || loginAttempts >= 3}
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
+
+          {loginAttempts > 0 && (
+            <div className="login-attempts">
+              Remaining attempts: {3 - loginAttempts}
+            </div>
+          )}
         </form>
         
         <div className="login-footer">

@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import BackgroundAnimation from '../components/BackgroundAnimation'
+import '../styles/ContactPage.css'
+// Add Font Awesome CDN link in your index.html if not already present
+// <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 const ContactPage = () => {
   useEffect(() => {
@@ -89,31 +92,63 @@ const ContactPage = () => {
               
               <div className="contact-method">
                 <div className="contact-icon">
-                  <i className="fas fa-envelope"></i>
+                  <i className="fas fa-envelope-open-text"></i>
                 </div>
                 <div className="contact-detail">
                   <strong>Email</strong>
-                  <p>aicinema69@gmail.com</p>
+                  <p>
+                    <a href="mailto:aicinema69@gmail.com" className="contact-link">
+                      <i className="fas fa-envelope"></i> aicinema69@gmail.com
+                    </a>
+                  </p>
                 </div>
               </div>
               
               <div className="contact-method">
                 <div className="contact-icon">
-                  <i className="fas fa-phone"></i>
+                  <i className="fas fa-phone-alt"></i>
                 </div>
                 <div className="contact-detail">
                   <strong>Phone</strong>
-                  <p>+91 9918437706</p>
+                  <p>
+                    <a href="tel:+919918437706" className="contact-link">
+                      <i className="fas fa-phone"></i> +91 9918437706
+                    </a>
+                  </p>
                 </div>
               </div>
               
               <div className="contact-method">
                 <div className="contact-icon">
-                  <i className="fas fa-map-marker-alt"></i>
+                  <i className="fas fa-map-marked-alt"></i>
                 </div>
                 <div className="contact-detail">
                   <strong>Headquarters</strong>
-                  <p>123 AI Boulevard, Suite 100<br/>San Francisco, CA 94107</p>
+                  <p>
+                    <a 
+                      href="https://www.google.com/maps/place/National+Institute+of+Technology+Nagaland" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="contact-link"
+                    >
+                      <i className="fas fa-map-marker-alt"></i> National Institute of Technology Nagaland<br/>
+                      <span className="address-detail">Dimapur, Nagaland 797103<br/>India</span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+
+              <div className="contact-method">
+                <div className="contact-icon">
+                  <i className="fas fa-clock"></i>
+                </div>
+                <div className="contact-detail">
+                  <strong>Business Hours</strong>
+                  <p>
+                    <i className="far fa-clock"></i> Monday - Friday: 9:00 AM - 6:00 PM<br/>
+                    <i className="far fa-clock"></i> Saturday: 10:00 AM - 4:00 PM<br/>
+                    <i className="far fa-clock"></i> Sunday: Closed
+                  </p>
                 </div>
               </div>
             </div>
@@ -136,6 +171,7 @@ const ContactPage = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
+                    placeholder="Enter your full name"
                   />
                 </div>
                 
@@ -148,6 +184,7 @@ const ContactPage = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
+                    placeholder="Enter your email address"
                   />
                 </div>
                 
@@ -159,6 +196,7 @@ const ContactPage = () => {
                     name="company"
                     value={formData.company}
                     onChange={handleChange}
+                    placeholder="Enter your company name (optional)"
                   />
                 </div>
                 
@@ -170,6 +208,7 @@ const ContactPage = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
+                    placeholder="Enter your phone number (optional)"
                   />
                 </div>
                 
@@ -182,6 +221,7 @@ const ContactPage = () => {
                     value={formData.message}
                     onChange={handleChange}
                     required
+                    placeholder="How can we help you?"
                   ></textarea>
                 </div>
                 
@@ -201,7 +241,7 @@ const ContactPage = () => {
           <div className="map-container">
             <iframe
               title="AetherMind Headquarters"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.138053771816!2d-122.4194155846822!3d37.77492997975948!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80859a6d00690021%3A0x4a501367f076adff!2sSan%20Francisco%2C%20CA!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3579.8999999999996!2d93.7222!3d25.8999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x374e4a3c3c3c3c3c%3A0x3c3c3c3c3c3c3c3c!2sNational%20Institute%20of%20Technology%20Nagaland!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
               width="100%"
               height="450"
               style={{ border: 0 }}
