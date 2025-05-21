@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
+import { loginUser, registerUser } from '../services/authService';
 
 // Create the Auth Context
 export const AuthContext = createContext();
@@ -30,11 +31,13 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (userData) => {
+  const login = async (email, password) => {
     try {
       setLoading(true);
       setError(null);
 
+      const userData = await loginUser(email, password);
+      
       // Store user data in state
       setUser(userData);
       setIsAuthenticated(true);
@@ -45,7 +48,31 @@ export const AuthProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error('Login error:', error);
-      setError('Failed to login. Please try again.');
+      setError(error.message || 'Failed to login. Please try again.');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const register = async (userData) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const newUser = await registerUser(userData);
+      
+      // Store user data in state
+      setUser(newUser);
+      setIsAuthenticated(true);
+      
+      // Store in localStorage
+      localStorage.setItem('user', JSON.stringify(newUser));
+      
+      return true;
+    } catch (error) {
+      console.error('Registration error:', error);
+      setError(error.message || 'Failed to register. Please try again.');
       return false;
     } finally {
       setLoading(false);
@@ -74,6 +101,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated, 
         user, 
         login, 
+        register,
         logout, 
         loading, 
         error,

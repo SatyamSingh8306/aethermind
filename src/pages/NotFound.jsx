@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
+import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/NotFound.css';
 
 const NotFound = () => {
   return (
     <div className="not-found-container">
+      <BackgroundAnimation />
       <div className="not-found-content">
         <div className="error-code">404</div>
         <h1 className="error-title">Page Not Found</h1>

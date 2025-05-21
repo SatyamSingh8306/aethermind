@@ -380,18 +380,20 @@
 /* User Menu */
 .user-menu-container {
   position: relative;
+  margin-left: 1rem;
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  padding: 0.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  gap: 0.5rem;
   background: transparent;
   border: none;
+  padding: 0.5rem;
+  cursor: pointer;
   color: var(--text-light);
+  transition: all 0.2s ease;
+  border-radius: 4px;
 }
 
 .user-info:hover, .user-info:focus {
@@ -404,31 +406,26 @@
 }
 
 .user-avatar {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  background: var(--primary-color);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
   font-weight: 600;
-  font-size: 1.1rem;
-  margin-right: 10px;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  font-size: 0.9rem;
+  flex-shrink: 0;
 }
 
 .user-name {
-  color: var(--text-light);
+  font-size: 0.9rem;
   font-weight: 500;
-  font-size: 0.95rem;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-dropdown {
@@ -656,16 +653,15 @@
   }
 
   .user-menu-container {
-    width: 100%;
+    margin-left: 0.5rem;
   }
 
   .user-info {
-    width: 100%;
-    justify-content: flex-start;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.05);
-    margin-bottom: 0.75rem;
+    padding: 0.25rem;
+  }
+
+  .user-name {
+    max-width: 100px;
   }
 
   .user-dropdown {
@@ -720,6 +716,18 @@
     font-size: 0.9rem;
     padding: 0.7rem 1rem;
     padding-right: 2.5rem;
+  }
+
+  .user-menu-container {
+    margin-left: 0.25rem;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .user-info {
+    padding: 0.25rem;
   }
 }
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaBookmark, FaHistory, FaCog, FaBell, FaChartLine, FaFileAlt, FaQuestionCircle, FaShoppingCart, FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
+import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -50,6 +51,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
+      <BackgroundAnimation />
       <div className="dashboard-header">
         <div className="welcome-section">
           <h1>Welcome back, {user.name}!</h1>
@@ -79,7 +81,7 @@ const Dashboard = () => {
             </button>
             <button 
               className={`nav-item ${activeTab === 'cart' ? 'active' : ''}`}
-              onClick={() => setActiveTab('cart')}
+              onClick={() => navigate('/cart')}
             >
               <FaShoppingCart /> Cart
             </button>
@@ -109,7 +111,12 @@ const Dashboard = () => {
             <>
               <div className="stats-grid">
                 {userStats.map((stat, index) => (
-                  <div key={index} className="stat-card" style={{ borderColor: stat.color }}>
+                  <div 
+                    key={index} 
+                    className={`stat-card ${stat.title === 'Cart Items' ? 'clickable' : ''}`}
+                    style={{ borderColor: stat.color }}
+                    onClick={() => stat.title === 'Cart Items' && navigate('/cart')}
+                  >
                     <div className="stat-icon" style={{ color: stat.color }}>
                       {stat.icon}
                     </div>

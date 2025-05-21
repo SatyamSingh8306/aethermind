@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaChartLine, FaBell, FaCog, FaHistory, FaStar, FaBoxes, FaFileAlt, FaLifeRing, FaChevronRight } from 'react-icons/fa';
+import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -52,6 +53,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
+      <BackgroundAnimation />
       <div className="dashboard-header">
         <div className="welcome-section">
           <div className="breadcrumb">Dashboard / Overview</div>

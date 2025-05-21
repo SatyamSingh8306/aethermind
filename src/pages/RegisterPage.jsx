@@ -78,9 +78,15 @@ const RegisterPage = () => {
     setLoading(true);
     
     try {
-      // In a real app, you would call your API to register the user
-      await register(formData.name, formData.email, formData.password);
-      navigate('/');
+      const success = await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+      
+      if (success) {
+        navigate('/');
+      }
     } catch (error) {
       setErrors({
         form: error.message || 'Registration failed. Please try again.'

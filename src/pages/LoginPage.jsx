@@ -95,29 +95,19 @@ const LoginPage = () => {
         throw new Error('Too many login attempts. Please try again later.');
       }
 
-      const user = verifyCredentials(formData.email, formData.password);
+      const success = await login(formData.email, formData.password);
       
-      if (user) {
-        const userDataToStore = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          isAuthenticated: true
-        };
-        
-        // Call login function from AuthContext
-        const loginSuccess = await login(userDataToStore);
-        
-        if (loginSuccess) {
+      if (success) {
+        // Get user data from localStorage
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
           // Redirect based on role
-          if (user.role === 'admin') {
+          if (userData.role === 'admin') {
             navigate('/admin-dashboard');
           } else {
             navigate('/dashboard');
           }
-        } else {
-          throw new Error('Login failed. Please try again.');
         }
       } else {
         setLoginAttempts(prev => prev + 1);

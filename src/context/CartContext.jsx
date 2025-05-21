@@ -13,25 +13,21 @@ export const CartProvider = ({ children }) => {
   // Load cart items from localStorage on initial render
   useEffect(() => {
     try {
-      if (currentUser) {
-        // Load user-specific cart from userCarts.json
+      const cartKey = currentUser ? `cart_${currentUser.id}` : 'cart';
+      const savedCart = localStorage.getItem(cartKey);
+      if (savedCart) {
+        setCartItems(JSON.parse(savedCart));
+      } else if (currentUser) {
+        // For new logged-in users, try to load from userCarts.json
         const userCart = userCartsData.userCarts.find(cart => cart.userId === currentUser.id);
         if (userCart) {
           setCartItems(userCart.cartItems);
-        } else {
-          // If no cart exists for this user, create an empty one
-          setCartItems([]);
-        }
-      } else {
-        // Load guest cart from localStorage
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
-          setCartItems(JSON.parse(savedCart));
+          // Save to localStorage for future use
+          localStorage.setItem(cartKey, JSON.stringify(userCart.cartItems));
         }
       }
     } catch (error) {
       console.error('Error loading cart:', error);
-      // Fallback to empty cart if there's an error
       setCartItems([]);
     } finally {
       setIsLoading(false);
@@ -42,19 +38,8 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     if (!isLoading) {
       try {
-        if (currentUser) {
-          // Update userCarts.json with new cart data
-          const updatedUserCarts = userCartsData.userCarts.map(cart => 
-            cart.userId === currentUser.id 
-              ? { ...cart, cartItems: cartItems }
-              : cart
-          );
-          // In a real app, this would be an API call to update the database
-          console.log('Updated user carts:', updatedUserCarts);
-        } else {
-          // Save guest cart to localStorage
-          localStorage.setItem('cart', JSON.stringify(cartItems));
-        }
+        const cartKey = currentUser ? `cart_${currentUser.id}` : 'cart';
+        localStorage.setItem(cartKey, JSON.stringify(cartItems));
       } catch (error) {
         console.error('Error saving cart:', error);
       }

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
+import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/Cart.css';
 
 const Cart = () => {
@@ -24,6 +25,7 @@ const Cart = () => {
   if (isLoading) {
     return (
       <div className="cart-container">
+        <BackgroundAnimation />
         <div className="cart-loading">
           <div className="loader"></div>
           <p>Loading your cart...</p>
@@ -36,6 +38,7 @@ const Cart = () => {
   if (!currentUser) {
     return (
       <div className="cart-container">
+        <BackgroundAnimation />
         <div className="cart-login-prompt">
           <h2>Please Log In</h2>
           <p>You need to be logged in to view your cart.</p>
@@ -59,6 +62,7 @@ const Cart = () => {
   if (cartItems.length === 0) {
     return (
       <div className="cart-container">
+        <BackgroundAnimation />
         <div className="cart-empty">
           <h2>Your Cart is Empty</h2>
           <p>Looks like you haven't added any products to your cart yet.</p>
@@ -72,6 +76,7 @@ const Cart = () => {
 
   return (
     <div className="cart-container">
+      <BackgroundAnimation />
       <h1>Shopping Cart - {currentUser.name}'s Cart</h1>
       
       <div className="cart-content">
