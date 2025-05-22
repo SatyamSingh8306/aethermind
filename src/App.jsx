@@ -22,6 +22,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import NotFound from './pages/NotFound'
 import { CartProvider } from './context/CartContext'
 import Cart from './pages/Cart'
+import Chatbot from './components/Chatbot/Chatbot'
 import './App.css'
 
 function App() {
@@ -73,6 +74,7 @@ function App() {
               </Routes>
             </main>
             <Footer />
+            <Chatbot />
           </div>
         </Router>
       </CartProvider>

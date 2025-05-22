@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: aethermind-chatbot
+    runtime: python3
+    plan: free
+    region: oregon
+    buildCommand: |
+      cd chatbot
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: |
+      cd chatbot
+      uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: MODEL_NAME
+        value: llama-3.1-70b-versatile
+      - key: TEMPERATURE
+        value: 0.7
+      - key: MAX_TOKENS
+        value: 1024
+      - key: PYTHON_VERSION
+        value: 3.11.0

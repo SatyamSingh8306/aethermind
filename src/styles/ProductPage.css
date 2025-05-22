@@ -19,6 +19,7 @@
     font-weight: 700;
     background: linear-gradient(135deg, var(--text-light), var(--secondary-color));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: fadeInUp 0.8s ease-out;
   }
