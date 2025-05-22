@@ -35,26 +35,7 @@ jobs:
     - name: Test API endpoints
       env:
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-      run: |
-        python -c "
-        import os
-        from main import app
-        from fastapi.testclient import TestClient
-        
-        client = TestClient(app)
-        
-        # Test health endpoint
-        response = client.get('/health')
-        assert response.status_code == 200
-        print('✅ Health check passed')
-        
-        # Test root endpoint
-        response = client.get('/')
-        assert response.status_code == 200
-        print('✅ Root endpoint passed')
-        
-        print('All tests passed!')
-        "
+      run: python test_endpoint.py
 
   deploy:
     needs: test

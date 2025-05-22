@@ -1,5 +1,4 @@
-fastapi==0.110.1
-starlette==0.36.3
+fastapi==0.104.1
 uvicorn==0.24.0
 langchain==0.1.16
 langchain-groq==0.1.0
