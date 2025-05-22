@@ -2,7 +2,7 @@ import os
 from fastapi.testclient import TestClient
 from main import app
 
-client = TestClient(app)
+client = TestClient(app=app)
 
 def run_tests():
     # Test health endpoint
