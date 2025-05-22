@@ -62,7 +62,7 @@ const Chatbot = () => {
       console.log('Sending message:', currentMessage);
       console.log('Session ID:', sessionId);
 
-      const response = await fetch('http://localhost:8000/chat', {
+      const response = await fetch('https://aethermind.onrender.com/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ const Chatbot = () => {
   const clearChat = async () => {
     try {
       console.log('Clearing chat for session:', sessionId);
-      const response = await fetch(`http://localhost:8000/chat/session/${sessionId}`, {
+      const response = await fetch(`https://aethermind.onrender.com/chat/session/${sessionId}`, {
         method: 'DELETE',
         headers: {
           'Accept': 'application/json',

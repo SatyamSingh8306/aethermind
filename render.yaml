@@ -1,17 +1,9 @@
 services:
   - type: web
     name: aethermind-chatbot
-    runtime: python3
-    plan: free
-    region: oregon
-    buildCommand: |
-      cd chatbot
-      pip install --upgrade pip
-      pip install -r requirements.txt
-    startCommand: |
-      cd chatbot
-      uvicorn main:app --host 0.0.0.0 --port $PORT
-    healthCheckPath: /health
+    env: python
+    buildCommand: pip install -r chatbot/requirements.txt
+    startCommand: cd chatbot && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: GROQ_API_KEY
         sync: false
@@ -21,5 +13,7 @@ services:
         value: 0.7
       - key: MAX_TOKENS
         value: 1024
-      - key: PYTHON_VERSION
-        value: 3.11.0
+      - key: ENVIRONMENT
+        value: production
+      - key: ALLOWED_ORIGINS
+        sync: false
