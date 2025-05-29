@@ -142,15 +142,19 @@ const BackgroundAnimation = () => {
     let targetMouseX = 0
     let targetMouseY = 0
     
-    document.addEventListener('mousemove', (event) => {
+    const handleMouseMove = (event) => {
       targetMouseX = (event.clientX / window.innerWidth) * 2 - 1
       targetMouseY = (event.clientY / window.innerHeight) * 2 - 1
-    })
+    }
+    
+    document.addEventListener('mousemove', handleMouseMove)
 
     // Animation loop with smooth mouse following
     let time = 0
+    let animationFrameId
+    
     const animate = () => {
-      requestAnimationFrame(animate)
+      animationFrameId = requestAnimationFrame(animate)
       
       time += 0.01
       particlesMaterial.uniforms.time.value = time
@@ -172,9 +176,19 @@ const BackgroundAnimation = () => {
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize)
-      renderer.dispose()
-      particlesGeometry.dispose()
+      document.removeEventListener('mousemove', handleMouseMove)
+      
+      // Stop the animation loop
+      cancelAnimationFrame(animationFrameId)
+      
+      // Dispose of materials first
       particlesMaterial.dispose()
+      
+      // Then dispose of geometries
+      particlesGeometry.dispose()
+      
+      // Finally dispose of the renderer
+      renderer.dispose()
     }
   }, [])
 

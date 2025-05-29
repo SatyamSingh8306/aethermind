@@ -31,6 +31,7 @@
   background-clip: text;
   letter-spacing: 0.5px;
   position: relative;
+  display: inline-block;
 }
 
 .logo-text::after {
@@ -46,7 +47,7 @@
   transition: transform 0.3s ease;
 }
 
-.logo-container:hover .logo-text::after {
+.logo-text:hover::after {
   transform: scaleX(1);
   transform-origin: left;
 }
