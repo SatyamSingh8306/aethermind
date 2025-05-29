@@ -1,6 +1,21 @@
-import { useEffect } from 'react'
+import { useEffect, memo } from 'react'
 import { Link } from 'react-router-dom'
 import BackgroundAnimation from '../components/BackgroundAnimation'
+
+const HeroSection = memo(() => (
+  <section className="hero-section">
+    <div className="hero-content">
+      <h1 className="hero-title">Intelligent AI Solutions for Next-Gen Business</h1>
+      <p className="hero-subtitle">
+        AetherMind provides cutting-edge AI-powered automation, analytics, and intelligent agents to transform your business processes.
+      </p>
+      <div className="hero-cta-group">
+        <Link to="/services" className="primary-btn">Explore Services</Link>
+        <Link to="/contact" className="secondary-btn">Schedule Demo</Link>
+      </div>
+    </div>
+  </section>
+))
 
 const HomePage = () => {
   useEffect(() => {
@@ -11,21 +26,8 @@ const HomePage = () => {
   return (
     <div className="home-page">
       <BackgroundAnimation />
+      <HeroSection />
       
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <h1 className="hero-title">Intelligent AI Solutions for Next-Gen Business</h1>
-          <p className="hero-subtitle">
-            AetherMind provides cutting-edge AI-powered automation, analytics, and intelligent agents to transform your business processes.
-          </p>
-          <div className="hero-cta-group">
-            <Link to="/services" className="primary-btn">Explore Services</Link>
-            <Link to="/contact" className="secondary-btn">Schedule Demo</Link>
-          </div>
-        </div>
-      </section>
-
       {/* Features Section */}
       <section className="features-section">
         <div className="container">

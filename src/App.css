@@ -30,15 +30,19 @@ main {
   justify-content: center;
   padding: 6rem 2rem;
   text-align: center;
-  min-height: calc(100vh - 70px);  /* Adjust based on navbar height */
+  min-height: calc(100vh - 70px);
   position: relative;
   overflow: hidden;
+  will-change: transform;
+  contain: content;
 }
 
 .hero-content {
   position: relative;
   z-index: 1;
   max-width: 900px;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .hero-title {
@@ -50,6 +54,8 @@ main {
   background-clip: text;
   color: transparent;
   line-height: 1.2;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .hero-subtitle {
@@ -60,6 +66,9 @@ main {
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: content;
 }
 
 .hero-cta-group {
