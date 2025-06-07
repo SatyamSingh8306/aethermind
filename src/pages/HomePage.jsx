@@ -11,7 +11,7 @@ const HeroSection = memo(() => (
       </p>
       <div className="hero-cta-group">
         <Link to="/services" className="primary-btn">Explore Services</Link>
-        <Link to="/contact" className="secondary-btn">Schedule Demo</Link>
+        <Link to="/demo" className="secondary-btn">Schedule Demo</Link>
       </div>
     </div>
   </section>
@@ -130,7 +130,7 @@ const HomePage = () => {
           <div className="cta-content">
             <h2>Ready to Transform Your Business with AI?</h2>
             <p>Schedule a free consultation with our experts to discover how AetherMind can elevate your business.</p>
-            <Link to="/contact" className="primary-btn">Get Started</Link>
+            <Link to="/demo" className="primary-btn">Get Started</Link>
           </div>
         </div>
       </section>

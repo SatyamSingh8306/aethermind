@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import BackToTop from './components/BackToTop'
 import HomePage from './pages/HomePage'
 import ServicesPage from './pages/ServicesPage'
 import AboutPage from './pages/AboutPage'
@@ -16,6 +17,7 @@ import BlogPage from './pages/BlogPage'
 import DocumentationPage from './pages/DocumentationPage'
 import FAQPage from './pages/FAQPage'
 import SupportPage from './pages/SupportPage'
+import DemoPage from './pages/DemoPage'
 import { AuthProvider } from './context/AuthContext'
 import Dashboard from './pages/Dashboard'
 import AdminDashboard from './pages/AdminDashboard'
@@ -59,6 +61,7 @@ function App() {
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+                <Route path="/demo" element={<DemoPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -75,6 +78,7 @@ function App() {
             </main>
             <Footer />
             <Chatbot />
+            <BackToTop />
           </div>
         </Router>
       </CartProvider>

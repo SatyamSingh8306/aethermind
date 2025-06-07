@@ -14,6 +14,9 @@ const Chatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY = 1000; // 1 second
   
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -79,6 +82,16 @@ const Chatbot = () => {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Response error:', errorText);
+        
+        // Implement retry logic
+        if (retryCount < MAX_RETRIES) {
+          setRetryCount(prev => prev + 1);
+          setTimeout(() => {
+            sendMessage();
+          }, RETRY_DELAY * (retryCount + 1));
+          return;
+        }
+        
         throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
 
@@ -97,6 +110,7 @@ const Chatbot = () => {
       };
 
       setMessages(prev => [...prev, botMessage]);
+      setRetryCount(0); // Reset retry count on success
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage = {
@@ -181,7 +195,7 @@ const Chatbot = () => {
             </div>
             <div>
               <h3>AetherMind Assistant</h3>
-              <span className="online-status">Online</span>
+              <span className="online-status">{isLoading ? 'Typing...' : 'Online'}</span>
             </div>
           </div>
           <div className="chatbot-header-actions">
