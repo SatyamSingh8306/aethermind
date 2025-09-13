@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FaShoppingCart, FaHeart, FaShare, FaStar, FaMinus, FaPlus } from 'react-icons/fa';
+import { FaShoppingCart, FaHeart, FaShare, FaStar, FaMinus, FaPlus, FaRocket, FaLock } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import productsData from '../data/products.json';
 import '../styles/ProductDetailPage.css';
@@ -15,12 +15,10 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddToCartEffect, setShowAddToCartEffect] = useState(false);
-  
+
   useEffect(() => {
-    // Find the product with the matching id
     const foundProduct = productsData.find(p => p.id === parseInt(id));
-    
-    // Simulate loading delay
+
     setTimeout(() => {
       if (foundProduct) {
         setProduct(foundProduct);
@@ -30,11 +28,11 @@ const ProductDetailPage = () => {
       setLoading(false);
     }, 300);
   }, [id]);
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
   const handleAddToCart = () => {
     if (product) {
       addToCart({
@@ -44,8 +42,7 @@ const ProductDetailPage = () => {
         image: product.image,
         quantity: quantity
       });
-      
-      // Show success effect
+
       setShowAddToCartEffect(true);
       setTimeout(() => {
         setShowAddToCartEffect(false);
@@ -66,7 +63,7 @@ const ProductDetailPage = () => {
       </div>
     );
   }
-  
+
   if (error) {
     return (
       <div className="product-detail-error">
@@ -76,7 +73,7 @@ const ProductDetailPage = () => {
       </div>
     );
   }
-  
+
   if (!product) {
     return (
       <div className="product-detail-error">
@@ -86,30 +83,30 @@ const ProductDetailPage = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="product-detail-page">
       <BackgroundAnimation />
-      
+
       <div className="product-detail-container">
         <div className="product-breadcrumb">
           <Link to="/products">Products</Link> / {product.name}
         </div>
-        
+
         <div className="product-detail-content">
           <div className="product-detail-image">
             <img src={product.image || '/images/product-placeholder.jpg'} alt={product.name} />
           </div>
-          
+
           <div className="product-detail-info">
             <span className="product-category-badge">{product.category}</span>
             <h1>{product.name}</h1>
-            
+
             <div className="product-price-section">
               <h2 className="product-price">{product.price.toFixed(2)}</h2>
-              
+
               <div className="quantity-selector">
-                <button 
+                <button
                   onClick={() => handleQuantityChange(quantity - 1)}
                   className="quantity-btn"
                   aria-label="Decrease quantity"
@@ -121,10 +118,10 @@ const ProductDetailPage = () => {
                   min="1"
                   max="99"
                   value={quantity}
-                  onChange={(e) => handleQuantityChange(parseInt(e.target.value))}
+                  onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
                   className="quantity-input"
                 />
-                <button 
+                <button
                   onClick={() => handleQuantityChange(quantity + 1)}
                   className="quantity-btn"
                   aria-label="Increase quantity"
@@ -133,7 +130,7 @@ const ProductDetailPage = () => {
                 </button>
               </div>
 
-              <button 
+              <button
                 className={`add-to-cart-btn ${showAddToCartEffect ? 'success' : ''}`}
                 onClick={handleAddToCart}
               >
@@ -141,12 +138,12 @@ const ProductDetailPage = () => {
                 {showAddToCartEffect ? 'Added to Cart!' : 'Add to Cart'}
               </button>
             </div>
-            
+
             <div className="product-description">
               <h3>Description</h3>
               <p>{product.description}</p>
             </div>
-            
+
             <div className="product-features">
               <h3>Key Features</h3>
               <ul>
@@ -155,13 +152,36 @@ const ProductDetailPage = () => {
                 ))}
               </ul>
             </div>
-            
+
             <div className="product-cta">
               <Link to="/contact" className="contact-btn">
                 Contact Sales
               </Link>
               <p className="product-support-text">
                 Need more information? Our team is ready to help you implement this solution.
+              </p>
+            </div>
+
+            {/* 👇👇👇 NEW SECTION: TRY OR BUY OPTIONS 👇👇👇 */}
+            <div className="product-demo-section">
+              <h3 className="demo-section-title">Try or Buy</h3>
+              {product.id === 6 && product.status === 'live' && product.serviceUrl ? (
+                <button
+                  className="demo-launch-btn"
+                  onClick={() => window.open(product.serviceUrl, '_blank')}
+                >
+                  <FaRocket className="mr-2" /> Launch Demo Tool
+                </button>
+              ) : (
+                <button className="demo-coming-soon-btn" disabled>
+                  <FaLock className="mr-2" /> Buy Now (Coming Soon)
+                </button>
+              )}
+              <p className="demo-hint">
+                {product.id === 6
+                  ? "Try our live Portfolio Generator with no signup required."
+                  : "This product is under development. Contact sales for early access."
+                }
               </p>
             </div>
           </div>
