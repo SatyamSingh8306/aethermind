@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react'
 import BackgroundAnimation from '../components/BackgroundAnimation'
-import '../styles/ContactPage.css'
-// Add Font Awesome CDN link in your index.html if not already present
-// <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 const ContactPage = () => {
   useEffect(() => {
@@ -33,17 +30,14 @@ const ContactPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    
-    // In a real application, this would connect to your backend API
-    // For demo purposes, we'll simulate a successful submission
-    
+
     // Show loading state
     setFormStatus({
       message: 'Sending your message...',
       isError: false,
       isSubmitted: false
     })
-    
+
     // Simulate API call
     setTimeout(() => {
       setFormStatus({
@@ -51,7 +45,7 @@ const ContactPage = () => {
         isError: false,
         isSubmitted: true
       })
-      
+
       // Reset form
       setFormData({
         name: '',
@@ -64,14 +58,16 @@ const ContactPage = () => {
   }
 
   return (
-    <div className="contact-page">
+    <div className="relative min-h-screen">
       <BackgroundAnimation />
-      
+
       {/* Hero Section */}
-      <section className="contact-hero">
-        <div className="container">
-          <h1 className="section-title">Contact Us</h1>
-          <p className="section-subtitle">
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-900/80 to-purple-900/80 text-white backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+            Contact Us
+          </h1>
+          <p className="text-xl md:text-2xl opacity-90 leading-relaxed">
             Have questions or ready to start your AI journey? Reach out to our team and
             let's discuss how AetherMind can transform your business.
           </p>
@@ -79,91 +75,144 @@ const ContactPage = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="contact-section">
-        <div className="container">
-          <div className="contact-container">
-            <div className="contact-info">
-              <h2>Get in Touch</h2>
-              <p>
-                We'd love to hear from you. Whether you have a question about our services,
-                pricing, or just want to learn more about how AI can benefit your business,
-                our team is here to help.
-              </p>
-              
-              <div className="contact-method">
-                <div className="contact-icon">
-                  <i className="fas fa-envelope-open-text"></i>
-                </div>
-                <div className="contact-detail">
-                  <strong>Email</strong>
-                  <p>
-                    <a href="mailto:aicinema69@gmail.com" className="contact-link">
-                      <i className="fas fa-envelope"></i> aicinema69@gmail.com
-                    </a>
-                  </p>
-                </div>
-              </div>
-              
-              <div className="contact-method">
-                <div className="contact-icon">
-                  <i className="fas fa-phone-alt"></i>
-                </div>
-                <div className="contact-detail">
-                  <strong>Phone</strong>
-                  <p>
-                    <a href="tel:+919918437706" className="contact-link">
-                      <i className="fas fa-phone"></i> +91 9918437706
-                    </a>
-                  </p>
-                </div>
-              </div>
-              
-              <div className="contact-method">
-                <div className="contact-icon">
-                  <i className="fas fa-map-marked-alt"></i>
-                </div>
-                <div className="contact-detail">
-                  <strong>Headquarters</strong>
-                  <p>
-                    <a 
-                      href="https://www.google.com/maps/place/National+Institute+of+Technology+Nagaland" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="contact-link"
-                    >
-                      <i className="fas fa-map-marker-alt"></i> National Institute of Technology Nagaland<br/>
-                      <span className="address-detail">Dimapur, Nagaland 797103<br/>India</span>
-                    </a>
-                  </p>
-                </div>
+      <section className="py-16 px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Contact Info */}
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-3xl font-bold text-white mb-4 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">Get in Touch</h2>
+                <p className="text-lg text-gray-200 leading-relaxed opacity-90">
+                  We'd love to hear from you. Whether you have a question about our services,
+                  pricing, or just want to learn more about how AI can benefit your business,
+                  our team is here to help.
+                </p>
               </div>
 
-              <div className="contact-method">
-                <div className="contact-icon">
-                  <i className="fas fa-clock"></i>
+              {/* Contact Methods */}
+              <div className="space-y-6">
+                {/* Email */}
+                <div className="flex items-start p-4 rounded-lg bg-gray-900/40 backdrop-blur-sm border border-gray-700/30 hover:bg-gray-900/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10">
+                  <div className="flex-shrink-0 w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-300 mr-4 border border-blue-500/30 animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white mb-1">Email</h3>
+                    <a
+                      href="mailto:aicinema69@gmail.com"
+                      className="text-blue-300 hover:text-blue-100 transition-colors duration-200 flex items-center group"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      aicinema69@gmail.com
+                    </a>
+                  </div>
                 </div>
-                <div className="contact-detail">
-                  <strong>Business Hours</strong>
-                  <p>
-                    <i className="far fa-clock"></i> Monday - Friday: 9:00 AM - 6:00 PM<br/>
-                    <i className="far fa-clock"></i> Saturday: 10:00 AM - 4:00 PM<br/>
-                    <i className="far fa-clock"></i> Sunday: Closed
-                  </p>
+
+                {/* Phone */}
+                <div className="flex items-start p-4 rounded-lg bg-gray-900/40 backdrop-blur-sm border border-gray-700/30 hover:bg-gray-900/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10">
+                  <div className="flex-shrink-0 w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center text-green-300 mr-4 border border-green-500/30 animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white mb-1">Phone</h3>
+                    <a
+                      href="tel:+919918437706"
+                      className="text-green-300 hover:text-green-100 transition-colors duration-200 flex items-center group"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                      +91 9918437706
+                    </a>
+                  </div>
+                </div>
+
+                {/* Address */}
+                <div className="flex items-start p-4 rounded-lg bg-gray-900/40 backdrop-blur-sm border border-gray-700/30 hover:bg-gray-900/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-red-500/10">
+                  <div className="flex-shrink-0 w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center text-red-300 mr-4 border border-red-500/30 animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white mb-1">Headquarters</h3>
+                    <a
+                      href="https://www.google.com/maps/place/National+Institute+of+Technology+Nagaland"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-red-300 hover:text-red-100 transition-colors duration-200 block group"
+                    >
+                      <span className="flex items-start">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mt-1 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        National Institute of Technology Nagaland
+                      </span>
+                      <span className="ml-6 text-sm text-gray-300">Dimapur, Nagaland 797103, India</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Business Hours */}
+                <div className="flex items-start p-4 rounded-lg bg-gray-900/40 backdrop-blur-sm border border-gray-700/30 hover:bg-gray-900/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/10">
+                  <div className="flex-shrink-0 w-12 h-12 bg-indigo-500/20 rounded-full flex items-center justify-center text-indigo-300 mr-4 border border-indigo-500/30 animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white mb-1">Business Hours</h3>
+                    <div className="text-gray-300 space-y-1">
+                      <p className="flex items-center group">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Monday - Friday: 9:00 AM - 6:00 PM
+                      </p>
+                      <p className="flex items-center group">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Saturday: 10:00 AM - 4:00 PM
+                      </p>
+                      <p className="flex items-center group">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Sunday: Closed
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            
-            <div className="contact-form">
-              <h2>Send Us a Message</h2>
+
+            {/* Contact Form */}
+            <div className="bg-gray-900/40 backdrop-blur-sm p-6 sm:p-8 rounded-xl border border-gray-700/30 shadow-xl">
+              <h2 className="text-2xl font-bold text-white mb-6 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">Send Us a Message</h2>
+
               {formStatus.message && (
-                <div className={`form-message ${formStatus.isError ? 'error' : 'success'}`}>
+                <div className={`mb-6 p-4 rounded-lg border ${formStatus.isError
+                    ? 'bg-red-900/30 border-red-700/50 text-red-200'
+                    : 'bg-green-900/30 border-green-700/50 text-green-200'
+                  }`}>
                   {formStatus.message}
                 </div>
               )}
-              
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="name">Full Name*</label>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-2">
+                    Full Name*
+                  </label>
                   <input
                     type="text"
                     id="name"
@@ -172,11 +221,14 @@ const ContactPage = () => {
                     onChange={handleChange}
                     required
                     placeholder="Enter your full name"
+                    className="w-full px-4 py-3 bg-gray-800/50 backdrop-blur-sm border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                   />
                 </div>
-                
-                <div className="form-group">
-                  <label htmlFor="email">Email*</label>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
+                    Email*
+                  </label>
                   <input
                     type="email"
                     id="email"
@@ -185,11 +237,14 @@ const ContactPage = () => {
                     onChange={handleChange}
                     required
                     placeholder="Enter your email address"
+                    className="w-full px-4 py-3 bg-gray-800/50 backdrop-blur-sm border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                   />
                 </div>
-                
-                <div className="form-group">
-                  <label htmlFor="company">Company</label>
+
+                <div>
+                  <label htmlFor="company" className="block text-sm font-medium text-gray-200 mb-2">
+                    Company
+                  </label>
                   <input
                     type="text"
                     id="company"
@@ -197,11 +252,14 @@ const ContactPage = () => {
                     value={formData.company}
                     onChange={handleChange}
                     placeholder="Enter your company name (optional)"
+                    className="w-full px-4 py-3 bg-gray-800/50 backdrop-blur-sm border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                   />
                 </div>
-                
-                <div className="form-group">
-                  <label htmlFor="phone">Phone Number</label>
+
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-200 mb-2">
+                    Phone Number
+                  </label>
                   <input
                     type="tel"
                     id="phone"
@@ -209,11 +267,14 @@ const ContactPage = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Enter your phone number (optional)"
+                    className="w-full px-4 py-3 bg-gray-800/50 backdrop-blur-sm border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                   />
                 </div>
-                
-                <div className="form-group">
-                  <label htmlFor="message">Your Message*</label>
+
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-200 mb-2">
+                    Your Message*
+                  </label>
                   <textarea
                     id="message"
                     name="message"
@@ -222,11 +283,22 @@ const ContactPage = () => {
                     onChange={handleChange}
                     required
                     placeholder="How can we help you?"
+                    className="w-full px-4 py-3 bg-gray-800/50 backdrop-blur-sm border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 resize-none"
                   ></textarea>
                 </div>
-                
-                <button type="submit" className="btn-primary" disabled={formStatus.isSubmitted}>
-                  {formStatus.isSubmitted ? 'Message Sent!' : 'Send Message'}
+
+                <button
+                  type="submit"
+                  className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 relative overflow-hidden ${formStatus.isSubmitted
+                      ? 'bg-green-600/60 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-blue-500/25'
+                    }`}
+                  disabled={formStatus.isSubmitted}
+                >
+                  <span className="relative z-10">{formStatus.isSubmitted ? 'Message Sent!' : 'Send Message'}</span>
+                  {!formStatus.isSubmitted && (
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full animate-shimmer"></span>
+                  )}
                 </button>
               </form>
             </div>
@@ -235,22 +307,53 @@ const ContactPage = () => {
       </section>
 
       {/* Map Section */}
-      <section className="map-section">
-        <div className="container">
-          <h2>Our Location</h2>
-          <div className="map-container">
-            <iframe
-              title="AetherMind Headquarters"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3579.8999999999996!2d93.7222!3d25.8999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x374e4a3c3c3c3c3c%3A0x3c3c3c3c3c3c3c3c!2sNational%20Institute%20of%20Technology%20Nagaland!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
-              width="100%"
-              height="450"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-            ></iframe>
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900/20 backdrop-blur-sm relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-white mb-8 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">Our Location</h2>
+          <div className="rounded-xl overflow-hidden shadow-2xl border border-gray-700/30 bg-gray-900/40 backdrop-blur-sm">
+            <div className="aspect-w-16 aspect-h-9">
+              <iframe
+                title="AetherMind Headquarters"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3579.8999999999996!2d93.7222!3d25.8999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x374e4a3c3c3c3c3c%3A0x3c3c3c3c3c3c3c3c!2sNational%20Institute%20of%20Technology%20Nagaland!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
+                width="100%"
+                height="450"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                className="w-full h-full"
+              ></iframe>
+            </div>
           </div>
         </div>
       </section>
+
+      <style jsx>{`
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+        
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
+        }
+        
+        .animate-pulse {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.7;
+          }
+        }
+      `}</style>
     </div>
   )
 }

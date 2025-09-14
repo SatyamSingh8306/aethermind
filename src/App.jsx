@@ -53,7 +53,8 @@ function App() {
         <Router>
           <div className="app-container">
             <Navbar />
-            <main>
+            <main className="flex-grow pt-20 md:pt-24 px-4 sm:px-6 lg:px-8">
+              <div className="mx-auto">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/products" element={<ProductsPage />} />
@@ -75,6 +76,7 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </div>
             </main>
             <Footer />
             <Chatbot />
