@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import productsData from '../data/products.json';
 import '../styles/ProductPage.css';
 import BackgroundAnimation from '../components/BackgroundAnimation';
+import { formatInr } from '../utils/currency';
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -72,7 +73,7 @@ const ProductsPage = () => {
                 <h3>{product.name}</h3>
                 <p className="product-category">{product.category}</p>
                 <p className="product-description">{product.description}</p>
-                <p className="product-price">{product.price.toFixed(2)}</p>
+                <p className="product-price">{formatInr(product.price)}</p>
                 <Link to={`/products/${product.id}`} className="view-details-btn">
                   View Details
                 </Link>

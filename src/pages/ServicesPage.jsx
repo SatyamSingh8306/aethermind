@@ -3,55 +3,9 @@ import { Link } from 'react-router-dom'
 import { FaRobot, FaChartLine, FaBrain, FaCogs, FaCheck, FaArrowRight } from 'react-icons/fa'
 import BackgroundAnimation from '../components/BackgroundAnimation'
 import '../styles/ServicesPage.css'
+import { servicesData } from '../data/servicesData'
 
 const ServicesPage = () => {
-  const services = [
-    {
-      icon: <FaRobot />,
-      title: "AI-Powered Automation",
-      description: "Transform your business operations with intelligent automation solutions that learn and adapt to your needs.",
-      benefits: [
-        "Reduce manual tasks by up to 80%",
-        "24/7 operational efficiency",
-        "Error-free processing",
-        "Scalable automation workflows"
-      ]
-    },
-    {
-      icon: <FaBrain />,
-      title: "AI Chatbots & Assistants",
-      description: "Create intelligent conversational agents that understand context, learn from interactions, and provide personalized assistance.",
-      benefits: [
-        "Natural language understanding",
-        "Multi-channel deployment",
-        "Continuous learning capabilities",
-        "Seamless human handoff"
-      ]
-    },
-    {
-      icon: <FaChartLine />,
-      title: "Intelligent Analytics",
-      description: "Unlock actionable insights from your data with advanced AI analytics and predictive modeling.",
-      benefits: [
-        "Real-time data processing",
-        "Predictive trend analysis",
-        "Custom reporting dashboards",
-        "Automated insights generation"
-      ]
-    },
-    {
-      icon: <FaCogs />,
-      title: "Custom AI Solutions",
-      description: "Tailored AI solutions designed to address your specific business challenges and opportunities.",
-      benefits: [
-        "Industry-specific expertise",
-        "End-to-end implementation",
-        "Ongoing support & maintenance",
-        "Scalable architecture"
-      ]
-    }
-  ]
-
   return (
     <div className="services-page">
       <BackgroundAnimation />
@@ -68,24 +22,28 @@ const ServicesPage = () => {
       {/* Services Section */}
       <section className="services-section">
         <div className="service-cards">
-          {services.map((service, index) => (
-            <div key={index} className="service-card">
+          {servicesData.map((service) => (
+            <div key={service.id} className="service-card">
               <div className="service-card-header">
                 <div className="service-icon">
-                  {service.icon}
+                  {service.id === 'ai-automation' && <FaRobot />}
+                  {service.id === 'ai-chatbots' && <FaBrain />}
+                  {service.id === 'ai-analytics' && <FaChartLine />}
+                  {service.id === 'custom-ai' && <FaCogs />}
                 </div>
                 <h2 className="service-title">{service.title}</h2>
               </div>
+              <p className="service-tagline">{service.tagline}</p>
               <p className="service-description">{service.description}</p>
               <div className="service-benefits">
                 {service.benefits.map((benefit, idx) => (
                   <div key={idx} className="benefit-item">
-                    <span className="benefit-icon">✓</span>
+                    <FaCheck className="benefit-icon" />
                     <span>{benefit}</span>
                   </div>
                 ))}
               </div>
-              <Link to="/contact" className="secondary-btn">
+              <Link to={`/services/${service.id}`} className="secondary-btn">
                 Learn More <FaArrowRight />
               </Link>
             </div>

@@ -107,31 +107,78 @@
 
 /* Main Content Area */
 .doc-content {
-  padding: 3rem;
+  padding: 3.5rem;
   max-width: 1200px;
   width: 100%;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
-.doc-content h1 {
-  font-size: 2.5rem;
+.doc-hero {
+  background: rgba(15, 23, 42, 0.55);
+  border-radius: 1.5rem;
+  padding: 2.5rem 3rem;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-default);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.doc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(99, 102, 241, 0.18);
+  color: var(--accent-primary);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  width: fit-content;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+.doc-hero h1 {
+  font-size: clamp(2.4rem, 4vw, 3rem);
   font-weight: 800;
-  margin-bottom: 2.5rem;
-  color: var(--text-primary);
-  position: relative;
-  padding-bottom: 1rem;
+  margin: 0;
   letter-spacing: -0.03em;
 }
 
-.doc-content h1::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--accent-primary), var(--accent-tertiary));
-  border-radius: 2px;
+.doc-hero p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-width: 720px;
+}
+
+.doc-section-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.section-header h2 {
+  font-size: 2rem;
+  margin-bottom: 0.6rem;
+}
+
+.section-header p {
+  color: var(--text-secondary);
+  max-width: 640px;
+  line-height: 1.7;
 }
 
 /* Documentation Sections */
@@ -142,12 +189,15 @@
 
 .doc-section {
   background: var(--bg-section);
-  border-radius: 1rem;
-  padding: 2rem;
+  border-radius: 1.25rem;
+  padding: 2.3rem;
   transition: var(--transition-default);
   border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   box-shadow: var(--shadow-default);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .doc-section:hover {
@@ -157,55 +207,93 @@
   transform: translateY(-3px);
 }
 
-.doc-section h2 {
-  font-size: 1.75rem;
-  margin-bottom: 1.25rem;
-  color: var(--text-primary);
-  font-weight: 700;
-  letter-spacing: -0.01em;
+.doc-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
-.doc-section p {
+.doc-section h3 {
+  font-size: 1.6rem;
+  margin: 0 0 0.6rem;
+}
+
+.doc-section-summary {
   color: var(--text-secondary);
+  margin: 0;
   line-height: 1.7;
-  font-size: 1.05rem;
-  margin-bottom: 1.75rem;
+}
+
+.doc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(250, 204, 21, 0.18);
+  color: #facc15;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.doc-highlights {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.doc-highlights li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.doc-highlights li svg {
+  color: var(--accent-tertiary);
+  margin-top: 0.2rem;
+  flex-shrink: 0;
 }
 
 /* Action Buttons */
 .doc-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 }
 
 .doc-button {
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 0.7rem;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-smooth);
-  background: var(--accent-bg);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(99, 102, 241, 0.4));
   color: var(--accent-primary);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  text-decoration: none;
 }
 
 .doc-button:hover {
-  background: var(--accent-bg-hover);
   transform: translateY(-2px);
   box-shadow: var(--glow-subtle);
+  border-color: rgba(99, 102, 241, 0.55);
 }
 
-.doc-button.secondary {
-  background: var(--accent-bg-secondary);
-  color: var(--accent-tertiary);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-}
-
-.doc-button.secondary:hover {
-  background: var(--accent-bg-secondary-hover);
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+.doc-coming-soon-note {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0;
 }
 
 /* Code Block Styling (if documentation includes code) */
@@ -229,7 +317,7 @@
   .documentation-page {
     grid-template-columns: 240px 1fr;
   }
-  
+
   .doc-content {
     padding: 2.5rem 2rem;
   }
@@ -239,7 +327,7 @@
   .documentation-page {
     grid-template-columns: 1fr;
   }
-  
+
   .doc-sidebar {
     position: fixed;
     left: -280px;
@@ -248,20 +336,25 @@
     height: 100%;
     width: 280px;
   }
-  
+
   .doc-sidebar.open {
     left: 0;
   }
-  
+
   .doc-content {
-    padding: 2rem 1.5rem;
+    padding: 2.5rem 1.5rem;
   }
-  
-  .doc-content h1 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
+
+  .doc-hero {
+    padding: 2rem;
   }
-  
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
   /* Mobile Menu Toggle */
   .menu-toggle {
     position: fixed;
@@ -277,7 +370,7 @@
     align-items: center;
     justify-content: center;
   }
-  
+
   .menu-toggle span {
     display: block;
     width: 24px;
@@ -286,7 +379,7 @@
     position: relative;
     transition: var(--transition-default);
   }
-  
+
   .menu-toggle span:before,
   .menu-toggle span:after {
     content: '';
@@ -296,15 +389,15 @@
     background: var(--text-primary);
     transition: var(--transition-default);
   }
-  
+
   .menu-toggle span:before {
     transform: translateY(-8px);
   }
-  
+
   .menu-toggle span:after {
     transform: translateY(8px);
   }
-  
+
   /* Add JavaScript to toggle the open class and transform hamburger to X */
 }
 
@@ -312,19 +405,19 @@
   .doc-content h1 {
     font-size: 1.75rem;
   }
-  
+
   .doc-section {
-    padding: 1.5rem;
+    padding: 1.8rem;
   }
-  
+
   .doc-section h2 {
     font-size: 1.4rem;
   }
-  
+
   .doc-actions {
     flex-direction: column;
   }
-  
+
   .doc-button {
     width: 100%;
     text-align: center;

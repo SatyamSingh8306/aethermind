@@ -151,7 +151,7 @@ const AboutPage = () => {
           <div className="cta-content">
             <h2>Join Our Team</h2>
             <p>We're always looking for talented individuals who are passionate about AI and innovation.</p>
-            <Link to="/about#careers" className="primary-btn">View Careers</Link>
+            <Link to="/careers" className="primary-btn">View Careers</Link>
           </div>
         </div>
       </section>

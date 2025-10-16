@@ -4,6 +4,7 @@ import { FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/Cart.css';
+import { formatInr } from '../utils/currency';
 
 const Cart = () => {
   const { 
@@ -15,6 +16,7 @@ const Cart = () => {
     currentUser,
     isLoading 
   } = useCart();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,7 +91,7 @@ const Cart = () => {
               
               <div className="item-details">
                 <h3>{item.name}</h3>
-                <p className="item-price">${item.price.toFixed(2)}</p>
+                <p className="item-price">{formatInr(item.price)}</p>
               </div>
               
               <div className="quantity-controls">
@@ -113,7 +115,7 @@ const Cart = () => {
               </div>
               
               <div className="item-total">
-                ${(item.price * item.quantity).toFixed(2)}
+                {formatInr(item.price * item.quantity)}
               </div>
               
               <button 
@@ -132,7 +134,7 @@ const Cart = () => {
           
           <div className="summary-row">
             <span>Subtotal</span>
-            <span>${getTotalPrice().toFixed(2)}</span>
+            <span>{formatInr(getTotalPrice())}</span>
           </div>
           
           <div className="summary-row">
@@ -142,7 +144,7 @@ const Cart = () => {
           
           <div className="summary-row total">
             <span>Total</span>
-            <span>${getTotalPrice().toFixed(2)}</span>
+            <span>{formatInr(getTotalPrice())}</span>
           </div>
           
           <button className="checkout-btn">

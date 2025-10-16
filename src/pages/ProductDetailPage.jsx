@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import productsData from '../data/products.json';
 import '../styles/ProductDetailPage.css';
 import BackgroundAnimation from '../components/BackgroundAnimation';
+import { formatInr } from '../utils/currency';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -103,7 +104,7 @@ const ProductDetailPage = () => {
             <h1>{product.name}</h1>
 
             <div className="product-price-section">
-              <h2 className="product-price">{product.price.toFixed(2)}</h2>
+              <h2 className="product-price">{formatInr(product.price)}</h2>
 
               <div className="quantity-selector">
                 <button

@@ -209,12 +209,6 @@
     gap: 0.5rem;
   }
   
-  .product-price::before {
-    content: '$';
-    font-size: 1.2rem;
-    opacity: 0.8;
-  }
-  
   .view-details-btn {
     display: inline-block;
     padding: 0.8rem 1.5rem;

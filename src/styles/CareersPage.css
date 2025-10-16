@@ -1,0 +1,92 @@
+.careers-page {
+  min-height: 100vh;
+  position: relative;
+  color: var(--text-light);
+  overflow: hidden;
+}
+
+.careers-hero {
+  position: relative;
+  padding: 8rem 1.5rem 4rem;
+  text-align: center;
+}
+
+.careers-title {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  margin-bottom: 1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--text-light), var(--secondary-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.careers-subtitle {
+  max-width: 720px;
+  margin: 0 auto;
+  font-size: 1.2rem;
+  opacity: 0.85;
+  line-height: 1.7;
+}
+
+.careers-status {
+  padding: 4rem 1.5rem 6rem;
+}
+
+.status-card {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem;
+  border-radius: 20px;
+  background: rgba(15, 15, 35, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.status-card h2 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.status-card p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.status-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.status-actions .primary-btn,
+.status-actions .secondary-btn {
+  min-width: 180px;
+}
+
+@media (max-width: 768px) {
+  .careers-hero {
+    padding: 6rem 1.5rem 3rem;
+  }
+
+  .status-card {
+    padding: 2.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-card {
+    padding: 2rem;
+  }
+
+  .status-actions {
+    flex-direction: column;
+  }
+}

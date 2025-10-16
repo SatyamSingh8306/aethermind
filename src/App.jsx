@@ -5,7 +5,9 @@ import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import HomePage from './pages/HomePage'
 import ServicesPage from './pages/ServicesPage'
+import ServiceDetailPage from './pages/ServiceDetailPage'
 import AboutPage from './pages/AboutPage'
+import CareersPage from './pages/CareersPage'
 import ContactPage from './pages/ContactPage'
 import ProductsPage from './pages/ProductsPage'
 import ProductDetailPage from './pages/ProductDetailPage'
@@ -60,7 +62,9 @@ function App() {
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/products/:id" element={<ProductDetailPage />} />
                 <Route path="/services" element={<ServicesPage />} />
+                <Route path="/services/:serviceId" element={<ServiceDetailPage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/careers" element={<CareersPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/demo" element={<DemoPage />} />
                 <Route path="/login" element={<LoginPage />} />

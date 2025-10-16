@@ -4,12 +4,13 @@ import { FaUser, FaBookmark, FaHistory, FaCog, FaBell, FaChartLine, FaFileAlt, F
 import { useCart } from '../context/CartContext';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/Dashboard.css';
+import { formatInr } from '../utils/currency';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
   const navigate = useNavigate();
-  const { cartItems, totalPrice, removeFromCart, updateQuantity } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, getTotalPrice } = useCart();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -200,7 +201,7 @@ const Dashboard = () => {
                         
                         <div className="item-details">
                           <h3>{item.name}</h3>
-                          <p className="item-price">${item.price.toFixed(2)}</p>
+                          <p className="item-price">{formatInr(item.price)}</p>
                         </div>
                         
                         <div className="quantity-controls">
@@ -224,7 +225,7 @@ const Dashboard = () => {
                         </div>
                         
                         <div className="item-total">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          {formatInr(item.price * item.quantity)}
                         </div>
                         
                         <button 
@@ -241,7 +242,7 @@ const Dashboard = () => {
                   <div className="cart-summary">
                     <div className="summary-row">
                       <span>Subtotal</span>
-                      <span>${totalPrice.toFixed(2)}</span>
+                      <span>{formatInr(getTotalPrice())}</span>
                     </div>
                     
                     <div className="summary-row">
@@ -251,7 +252,7 @@ const Dashboard = () => {
                     
                     <div className="summary-row total">
                       <span>Total</span>
-                      <span>${totalPrice.toFixed(2)}</span>
+                      <span>{formatInr(getTotalPrice())}</span>
                     </div>
                     
                     <button className="checkout-btn">

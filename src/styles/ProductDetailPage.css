@@ -113,7 +113,7 @@
 }
 
 .product-price::before {
-  content: '$';
+  content: '';
   font-size: 1.5rem;
   opacity: 0.8;
 }

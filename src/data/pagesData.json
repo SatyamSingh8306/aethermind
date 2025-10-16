@@ -39,55 +39,132 @@
     ]
   },
   "documentation": {
+    "hero": {
+      "title": "Product Documentation",
+      "subtitle": "Guides, API references, and tutorials to help you build with AetherMind faster."
+    },
     "sections": {
       "getting-started": {
         "title": "Getting Started",
+        "description": "Set up your workspace and launch your first automation in minutes.",
         "content": [
           {
             "title": "Quick Start Guide",
-            "content": "Learn how to set up and start using AetherMind in minutes."
+            "summary": "Install prerequisites, configure your environment, and deploy a sample workflow.",
+            "highlights": [
+              "Environment checklist and tooling",
+              "Connect data sources securely",
+              "Trigger your first automation run"
+            ],
+            "cta": {
+              "label": "Open Quick Start",
+              "href": "/docs/getting-started/quick-start"
+            }
           },
           {
             "title": "Installation",
-            "content": "Step-by-step guide to installing and configuring AetherMind."
+            "summary": "Step-by-step guidance for installing the CLI, SDK, and dashboard integrations.",
+            "highlights": [
+              "Supported operating systems",
+              "Workspace configuration file",
+              "Post-install health checks"
+            ],
+            "cta": {
+              "label": "Installation Checklist",
+              "href": "/docs/getting-started/installation"
+            }
           },
           {
-            "title": "Basic Concepts",
-            "content": "Understanding the core concepts and terminology used in AetherMind."
+            "title": "Core Concepts",
+            "summary": "Understand flows, connectors, and orchestration primitives used throughout the platform.",
+            "highlights": [
+              "Flows vs. workflows",
+              "Connector lifecycle",
+              "Execution and retry policies"
+            ]
           }
         ]
       },
       "api-reference": {
         "title": "API Reference",
+        "description": "Integrate programmatically with secure REST and realtime APIs.",
         "content": [
           {
             "title": "Authentication",
-            "content": "Learn about authentication methods and security best practices."
+            "summary": "Learn how to provision API keys, rotate credentials, and enforce scopes.",
+            "highlights": [
+              "Project vs. user tokens",
+              "OAuth 2.0 flows",
+              "Request signing examples"
+            ],
+            "cta": {
+              "label": "View Auth Reference",
+              "href": "/docs/api/authentication"
+            }
           },
           {
             "title": "Endpoints",
-            "content": "Comprehensive documentation of all available API endpoints."
+            "summary": "Browse the catalog of automation, analytics, and admin endpoints with sample payloads.",
+            "highlights": [
+              "Automation execution",
+              "Analytics queries",
+              "Admin management"
+            ],
+            "cta": {
+              "label": "Explore Endpoint Catalog",
+              "href": "/docs/api/endpoints"
+            }
           },
           {
             "title": "Rate Limits",
-            "content": "Understanding API rate limits and best practices for handling them."
+            "summary": "Understand default limits, adaptive throttling, and best practices for scaling clients.",
+            "highlights": [
+              "Burst vs. sustained quotas",
+              "Handling 429 responses",
+              "Monitoring usage"
+            ],
+            "comingSoon": true
           }
         ]
       },
       "tutorials": {
         "title": "Tutorials",
+        "description": "Hands-on walkthroughs for shipping production-ready intelligence.",
         "content": [
           {
-            "title": "Building Your First Project",
-            "content": "A hands-on tutorial to help you build your first project with AetherMind."
+            "title": "Build Your First Project",
+            "summary": "Create a customer support automation from scratch using guided steps.",
+            "highlights": [
+              "Design the workflow",
+              "Configure intents",
+              "Publish to production"
+            ],
+            "cta": {
+              "label": "Start Tutorial",
+              "href": "/docs/tutorials/first-project"
+            }
           },
           {
             "title": "Advanced Features",
-            "content": "Learn how to leverage advanced features and capabilities."
+            "summary": "Layer in analytics, human handoffs, and custom actions for complex deployments.",
+            "highlights": [
+              "Analytics dashboards",
+              "Human-in-the-loop",
+              "Custom connectors"
+            ],
+            "cta": {
+              "label": "Deep Dive Guide",
+              "href": "/docs/tutorials/advanced-features"
+            }
           },
           {
             "title": "Best Practices",
-            "content": "Guidelines and best practices for optimal usage of AetherMind."
+            "summary": "Operational guidelines covering monitoring, alerting, and governance.",
+            "highlights": [
+              "Observability checklist",
+              "Versioning strategies",
+              "Security and compliance"
+            ]
           }
         ]
       }
