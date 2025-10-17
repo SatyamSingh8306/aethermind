@@ -83,7 +83,7 @@
     "id": 6,
     "name": "Portfolio Generator",
     "description": "Make your dream portfolio in minutes.",
-    "price": 0,
+    "price": 1000,
     "image": "/images/portfolio.png",
     "category": "Data Solutions",
     "isDigital": true,
