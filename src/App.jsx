@@ -53,10 +53,10 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
-          <div className="app-container flex flex-col min-h-screen">
+          <div className="flex flex-col min-h-screen">
             <Navbar />
-            <main className="flex-grow pt-20 md:pt-24">
-              
+            <main className="flex-grow pt-20 md:pt-24 pb-16">
+              <div className="min-h-[calc(100vh-20rem)]">
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/products" element={<ProductsPage />} />
@@ -80,7 +80,7 @@ function App() {
                   <Route path="/cart" element={<Cart />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-             
+              </div>
             </main>
             <Footer />
             <Chatbot />

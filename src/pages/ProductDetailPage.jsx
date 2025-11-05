@@ -1,9 +1,21 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FaShoppingCart, FaHeart, FaShare, FaStar, FaMinus, FaPlus, FaRocket, FaLock } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  FaShoppingCart,
+  FaTimes,
+  FaStar,
+  FaMinus,
+  FaPlus,
+  FaRocket,
+  FaLock,
+  FaCheckCircle,
+  FaTruck,
+  FaShieldAlt,
+  FaUndo
+} from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import productsData from '../data/products.json';
-import '../styles/ProductDetailPage.css';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import { formatInr } from '../utils/currency';
 
@@ -13,26 +25,16 @@ const ProductDetailPage = () => {
   const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showAddToCartEffect, setShowAddToCartEffect] = useState(false);
 
   useEffect(() => {
     const foundProduct = productsData.find(p => p.id === parseInt(id));
-
-    setTimeout(() => {
-      if (foundProduct) {
-        setProduct(foundProduct);
-      } else {
-        setError('Product not found');
-      }
-      setLoading(false);
-    }, 300);
-  }, [id]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (foundProduct) {
+      setProduct(foundProduct);
+    } else {
+      navigate('/products');
+    }
+  }, [id, navigate]);
 
   const handleAddToCart = () => {
     if (product) {
@@ -43,151 +45,204 @@ const ProductDetailPage = () => {
         image: product.image,
         quantity: quantity
       });
-
       setShowAddToCartEffect(true);
-      setTimeout(() => {
-        setShowAddToCartEffect(false);
-      }, 2000);
+      setTimeout(() => setShowAddToCartEffect(false), 2000);
     }
   };
 
-  const handleQuantityChange = (value) => {
-    const newQuantity = Math.max(1, Math.min(99, value));
-    setQuantity(newQuantity);
-  };
-
-  if (loading) {
-    return (
-      <div className="product-detail-loading">
-        <div className="loader"></div>
-        <p>Loading product details...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="product-detail-error">
-        <h2>Error</h2>
-        <p>{error}</p>
-        <button onClick={() => navigate('/products')}>Back to Products</button>
-      </div>
-    );
-  }
-
-  if (!product) {
-    return (
-      <div className="product-detail-error">
-        <h2>Product Not Found</h2>
-        <p>The product you're looking for doesn't exist.</p>
-        <button onClick={() => navigate('/products')}>Back to Products</button>
-      </div>
-    );
-  }
+  if (!product) return null;
 
   return (
-    <div className="product-detail-page">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <BackgroundAnimation />
 
-      <div className="product-detail-container">
-        <div className="product-breadcrumb">
-          <Link to="/products">Products</Link> / {product.name}
-        </div>
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={() => navigate('/products')}
+      />
 
-        <div className="product-detail-content">
-          <div className="product-detail-image">
-            <img src={product.image || '/images/product-placeholder.jpg'} alt={product.name} />
+      {/* Modal Content - Optimized for no scroll */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="relative bg-gray-900/95 backdrop-blur-xl rounded-2xl max-w-6xl w-full h-[90vh] max-h-[600px] grid grid-cols-1 lg:grid-cols-12 overflow-hidden border border-gray-700 shadow-2xl"
+      >
+        {/* Close Button */}
+        <button
+          onClick={() => navigate('/products')}
+          className="absolute top-3 right-3 z-10 p-2 bg-gray-800/80 rounded-full hover:bg-gray-700 transition-colors"
+        >
+          <FaTimes className="text-sm" />
+        </button>
+
+        {/* Left: Image Section (5 cols) */}
+        <div className="lg:col-span-5 bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-6 flex flex-col">
+          {/* Image */}
+          <div className="flex-1 flex items-center justify-center mb-4">
+            <img
+              src={product.image || '/images/product-placeholder.jpg'}
+              alt={product.name}
+              className="w-full h-full max-h-[280px] object-contain rounded-lg"
+            />
           </div>
 
-          <div className="product-detail-info">
-            <span className="product-category-badge">{product.category}</span>
-            <h1>{product.name}</h1>
+          {/* Trust Badges - Compact */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className="bg-gray-800/50 rounded-lg p-2 text-center">
+              <FaTruck className="text-green-400 mx-auto mb-1 text-sm" />
+              <p className="text-xs text-gray-400">Fast Delivery</p>
+            </div>
+            <div className="bg-gray-800/50 rounded-lg p-2 text-center">
+              <FaShieldAlt className="text-blue-400 mx-auto mb-1 text-sm" />
+              <p className="text-xs text-gray-400">Secure</p>
+            </div>
+            <div className="bg-gray-800/50 rounded-lg p-2 text-center">
+              <FaUndo className="text-yellow-400 mx-auto mb-1 text-sm" />
+              <p className="text-xs text-gray-400">30-Day Return</p>
+            </div>
+          </div>
+        </div>
 
-            <div className="product-price-section">
-              <h2 className="product-price">{formatInr(product.price)}</h2>
+        {/* Right: Content Section (7 cols) */}
+        <div className="lg:col-span-7 p-6 flex flex-col">
+          {/* Header Section - Compact */}
+          <div className="mb-3">
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex-1">
+                <span className="inline-block px-2 py-1 bg-indigo-600/20 text-indigo-400 rounded-full text-xs font-medium mb-2">
+                  {product.category}
+                </span>
+                <h1 className="text-xl font-bold text-white">{product.name}</h1>
+              </div>
+              {/* Rating - Moved to header */}
+              <div className="flex items-center gap-1 bg-gray-800/50 rounded-lg px-2 py-1">
+                <FaStar className="text-yellow-400 text-xs" />
+                <span className="text-sm font-medium">4.5</span>
+                <span className="text-xs text-gray-400">(124)</span>
+              </div>
+            </div>
 
-              <div className="quantity-selector">
+            {/* Short Description */}
+            <p className="text-gray-400 text-sm line-clamp-2">
+              {product.description}
+            </p>
+          </div>
+
+          {/* Features Grid - Compact 2x3 */}
+          {product.features && (
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-4 py-3 border-y border-gray-800">
+              {product.features.slice(0, 6).map((feature, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <FaCheckCircle className="text-green-400 text-xs flex-shrink-0" />
+                  <span className="text-xs text-gray-300 line-clamp-1">{feature}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Price Section */}
+          <div className="flex items-end justify-between mb-4">
+            <div>
+              <p className="text-xs text-gray-400 mb-1">Price</p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold text-indigo-400">
+                  {formatInr(product.price)}
+                </span>
+                <span className="text-sm text-gray-500 line-through">
+                  {formatInr(product.price * 1.2)}
+                </span>
+                <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded">
+                  20% OFF
+                </span>
+              </div>
+            </div>
+
+            {/* Quantity Selector */}
+            <div>
+              <p className="text-xs text-gray-400 mb-1 text-right">Quantity</p>
+              <div className="flex items-center gap-1 bg-gray-800 rounded-lg p-1">
                 <button
-                  onClick={() => handleQuantityChange(quantity - 1)}
-                  className="quantity-btn"
-                  aria-label="Decrease quantity"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="w-8 h-8 flex items-center justify-center hover:bg-gray-700 rounded transition-colors"
                 >
-                  <FaMinus />
+                  <FaMinus className="text-xs" />
                 </button>
-                <input
-                  type="number"
-                  min="1"
-                  max="99"
-                  value={quantity}
-                  onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
-                  className="quantity-input"
-                />
+                <span className="w-10 text-center font-medium">{quantity}</span>
                 <button
-                  onClick={() => handleQuantityChange(quantity + 1)}
-                  className="quantity-btn"
-                  aria-label="Increase quantity"
+                  onClick={() => setQuantity(Math.min(99, quantity + 1))}
+                  className="w-8 h-8 flex items-center justify-center hover:bg-gray-700 rounded transition-colors"
                 >
-                  <FaPlus />
+                  <FaPlus className="text-xs" />
                 </button>
               </div>
-
-              <button
-                className={`add-to-cart-btn ${showAddToCartEffect ? 'success' : ''}`}
-                onClick={handleAddToCart}
-              >
-                <FaShoppingCart className="cart-icon" />
-                {showAddToCartEffect ? 'Added to Cart!' : 'Add to Cart'}
-              </button>
-            </div>
-
-            <div className="product-description">
-              <h3>Description</h3>
-              <p>{product.description}</p>
-            </div>
-
-            <div className="product-features">
-              <h3>Key Features</h3>
-              <ul>
-                {product.features && product.features.map((feature, index) => (
-                  <li key={index}>{feature}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="product-cta">
-              <Link to="/contact" className="contact-btn">
-                Contact Sales
-              </Link>
-              <p className="product-support-text">
-                Need more information? Our team is ready to help you implement this solution.
-              </p>
-            </div>
-
-            {/* 👇👇👇 NEW SECTION: TRY OR BUY OPTIONS 👇👇👇 */}
-            <div className="product-demo-section">
-              <h3 className="demo-section-title">Try or Buy</h3>
-              {product.id === 6 && product.status === 'live' && product.serviceUrl ? (
-                <button
-                  className="demo-launch-btn"
-                  onClick={() => window.open(product.serviceUrl, '_blank')}
-                >
-                  <FaRocket className="mr-2" /> Launch Demo Tool
-                </button>
-              ) : (
-                <button className="demo-coming-soon-btn" disabled>
-                  <FaLock className="mr-2" /> Buy Now (Coming Soon)
-                </button>
-              )}
-              <p className="demo-hint">
-                {product.id === 6
-                  ? "Try our live Portfolio Generator with no signup required."
-                  : "This product is under development. Contact sales for early access."
-                }
-              </p>
             </div>
           </div>
+
+          {/* Specifications - Compact Inline */}
+          <div className="flex gap-4 mb-4 pb-3 border-b border-gray-800">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400">Stock:</span>
+              <span className="text-xs font-medium text-green-400">In Stock</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400">SKU:</span>
+              <span className="text-xs font-medium">#{product.id}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400">Total:</span>
+              <span className="text-sm font-bold text-indigo-400">
+                {formatInr(product.price * quantity)}
+              </span>
+            </div>
+          </div>
+
+          {/* Action Buttons - Bottom */}
+          <div className="grid grid-cols-2 gap-3 mt-auto">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleAddToCart}
+              className={`py-3 ${showAddToCartEffect
+                  ? 'bg-green-600'
+                  : 'bg-indigo-600 hover:bg-indigo-700'
+                } rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors`}
+            >
+              {showAddToCartEffect ? (
+                <>
+                  <FaCheckCircle />
+                  Added to Cart!
+                </>
+              ) : (
+                <>
+                  <FaShoppingCart />
+                  Add to Cart
+                </>
+              )}
+            </motion.button>
+
+            {product.status === 'live' && product.serviceUrl ? (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => window.open(product.serviceUrl, '_blank')}
+                className="py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors"
+              >
+                <FaRocket />
+                Try Live Demo
+              </motion.button>
+            ) : (
+              <button
+                disabled
+                className="py-3 bg-gray-700 rounded-lg font-medium text-sm flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"
+              >
+                <FaLock />
+                Coming Soon
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

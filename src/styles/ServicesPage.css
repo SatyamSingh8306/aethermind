@@ -318,3 +318,81 @@
     justify-content: center;
   }
 } 
+/* ServicesPage.css */
+.service-card {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: none;
+  /* Avoid hover effects per your preference */
+}
+
+.service-benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+  gap: 0.5rem;
+}
+
+.service-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  text-decoration: none;
+}
+
+/* ServiceDetailPage.css */
+.service-detail-form-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.form-container {
+  max-width: 600px;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-group {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: 2px solid var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
