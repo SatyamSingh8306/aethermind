@@ -53,34 +53,34 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
-          <div className="app-container">
+          <div className="app-container flex flex-col min-h-screen">
             <Navbar />
-            <main className="flex-grow pt-20 md:pt-24 px-4 sm:px-6 lg:px-8">
-              <div className="mx-auto">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/products" element={<ProductsPage />} />
-                <Route path="/products/:id" element={<ProductDetailPage />} />
-                <Route path="/services" element={<ServicesPage />} />
-                <Route path="/services/:serviceId" element={<ServiceDetailPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/careers" element={<CareersPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/demo" element={<DemoPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsConditions />} />
-                <Route path="/blog" element={<BlogPage />} />
-                <Route path="/documentation" element={<DocumentationPage />} />
-                <Route path="/faq" element={<FAQPage />} />
-                <Route path="/support" element={<SupportPage />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              </div>
+            <main className="flex-grow pt-20 md:pt-24">
+              
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/products" element={<ProductsPage />} />
+                  <Route path="/products/:id" element={<ProductDetailPage />} />
+                  <Route path="/services" element={<ServicesPage />} />
+                  <Route path="/services/:serviceId" element={<ServiceDetailPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/careers" element={<CareersPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/demo" element={<DemoPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/terms" element={<TermsConditions />} />
+                  <Route path="/blog" element={<BlogPage />} />
+                  <Route path="/documentation" element={<DocumentationPage />} />
+                  <Route path="/faq" element={<FAQPage />} />
+                  <Route path="/support" element={<SupportPage />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+             
             </main>
             <Footer />
             <Chatbot />

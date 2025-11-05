@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
-import BackgroundAnimation from '../components/BackgroundAnimation'
+import { useState, useEffect } from 'react';
+import BackgroundAnimation from '../components/BackgroundAnimation';
 
 const ContactPage = () => {
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -12,39 +12,63 @@ const ContactPage = () => {
     company: '',
     phone: '',
     message: '',
-  })
+  });
 
   const [formStatus, setFormStatus] = useState({
     message: '',
     isError: false,
     isSubmitted: false,
-  })
+  });
+
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
-    }))
-  }
+    }));
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     // Show loading state
     setFormStatus({
       message: 'Sending your message...',
       isError: false,
       isSubmitted: false
-    })
+    });
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Google Forms URL for POST request
+      const googleFormsUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScNh0KhccfIFgu3AyqaiAPzTDSYZ1k1ps9POOcb1rhwXkaNcw/formResponse';
+
+      // Construct the form data for Google Forms
+      const formBody = new URLSearchParams();
+      formBody.append('entry.2005620554', formData.name);
+      formBody.append('entry.1045781291', formData.email);
+      formBody.append('entry.1065046570', formData.company);
+      formBody.append('entry.1166974658', formData.phone);
+      formBody.append('entry.839337160', formData.message);
+
+      // Send POST request to Google Forms
+      await fetch(googleFormsUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBody.toString(),
+      });
+
+      // Show success with enhanced animation
+      setShowConfetti(true);
       setFormStatus({
         message: 'Thank you! Your message has been sent successfully.',
         isError: false,
         isSubmitted: true
-      })
+      });
 
       // Reset form
       setFormData({
@@ -53,13 +77,59 @@ const ContactPage = () => {
         company: '',
         phone: '',
         message: '',
-      })
-    }, 1500)
-  }
+      });
+
+      // Hide confetti after animation
+      setTimeout(() => setShowConfetti(false), 3000);
+
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setFormStatus({
+        message: 'Sorry, there was an error sending your message. Please try again.',
+        isError: true,
+        isSubmitted: false
+      });
+    }
+  };
+
+  // Confetti Animation Component
+  const ConfettiEffect = () => {
+    if (!showConfetti) return null;
+
+    return (
+      <div className="fixed inset-0 z-50 pointer-events-none">
+        {/* Confetti particles */}
+        {[...Array(150)].map((_, i) => {
+          const delay = Math.random() * 2;
+          const duration = 2 + Math.random() * 2;
+          const left = Math.random() * 100;
+          const size = 8 + Math.random() * 12;
+          const color = ['#3B82F6', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B', '#EF4444'][Math.floor(Math.random() * 6)];
+
+          return (
+            <div
+              key={i}
+              className="absolute w-2 h-2 rounded-full animate-confetti"
+              style={{
+                left: `${left}%`,
+                top: '-20px',
+                width: `${size}px`,
+                height: `${size}px`,
+                backgroundColor: color,
+                animationDelay: `${delay}s`,
+                animationDuration: `${duration}s`,
+              }}
+            />
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen overflow-hidden">
       <BackgroundAnimation />
+      <ConfettiEffect />
 
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-900/80 to-purple-900/80 text-white backdrop-blur-sm">
@@ -196,15 +266,27 @@ const ContactPage = () => {
             </div>
 
             {/* Contact Form */}
-            <div className="bg-gray-900/40 backdrop-blur-sm p-6 sm:p-8 rounded-xl border border-gray-700/30 shadow-xl">
+            <div className="bg-gray-900/40 backdrop-blur-sm p-6 sm:p-8 rounded-xl border border-gray-700/30 shadow-xl relative overflow-hidden">
               <h2 className="text-2xl font-bold text-white mb-6 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">Send Us a Message</h2>
 
               {formStatus.message && (
-                <div className={`mb-6 p-4 rounded-lg border ${formStatus.isError
-                    ? 'bg-red-900/30 border-red-700/50 text-red-200'
-                    : 'bg-green-900/30 border-green-700/50 text-green-200'
+                <div className={`mb-6 p-4 rounded-lg border transform transition-all duration-500 ${formStatus.isError
+                  ? 'bg-red-900/30 border-red-700/50 text-red-200 animate-pulse'
+                  : 'bg-green-900/30 border-green-700/50 text-green-200 animate-bounce'
                   }`}>
-                  {formStatus.message}
+                  <div className="flex items-center">
+                    {!formStatus.isError && (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    {formStatus.isError && (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-400 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    <span>{formStatus.message}</span>
+                  </div>
                 </div>
               )}
 
@@ -289,13 +371,24 @@ const ContactPage = () => {
 
                 <button
                   type="submit"
-                  className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 relative overflow-hidden ${formStatus.isSubmitted
+                  className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 relative overflow-hidden transform hover:scale-105 active:scale-95 ${formStatus.isSubmitted
                       ? 'bg-green-600/60 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:shadow-blue-500/25'
+                      : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-xl hover:shadow-blue-500/25'
                     }`}
                   disabled={formStatus.isSubmitted}
                 >
-                  <span className="relative z-10">{formStatus.isSubmitted ? 'Message Sent!' : 'Send Message'}</span>
+                  <span className="relative z-10 flex items-center justify-center">
+                    {formStatus.isSubmitted ? (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        Message Sent!
+                      </>
+                    ) : (
+                      'Send Message'
+                    )}
+                  </span>
                   {!formStatus.isSubmitted && (
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full animate-shimmer"></span>
                   )}
@@ -353,9 +446,40 @@ const ContactPage = () => {
             opacity: 0.7;
           }
         }
+        
+        @keyframes confetti {
+          0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+          }
+        }
+        
+        .animate-confetti {
+          animation: confetti 2s ease-out forwards;
+        }
+        
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+          }
+          40% {
+            transform: translateY(-10px);
+          }
+          60% {
+            transform: translateY(-5px);
+          }
+        }
+        
+        .animate-bounce {
+          animation: bounce 1s ease-in-out;
+        }
       `}</style>
     </div>
-  )
-}
+  );
+};
 
-export default ContactPage
+export default ContactPage;
