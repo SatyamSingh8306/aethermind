@@ -36,14 +36,22 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
 
-      const userData = await loginUser(email, password);
-      
-      // Store user data in state
-      setUser(userData);
+      const authResponse = await loginUser(email, password);
+      const normalizedUser = authResponse?.user ? {
+        id: authResponse.user._id || authResponse.user.id,
+        name: authResponse.user.fullName || authResponse.user.name || '',
+        email: authResponse.user.email,
+        role: authResponse.user.role || 'client'
+      } : {
+        id: authResponse?._id || authResponse?.id,
+        name: authResponse?.fullName || authResponse?.name || '',
+        email: authResponse?.email,
+        role: authResponse?.role || 'client'
+      };
+
+      setUser(normalizedUser);
       setIsAuthenticated(true);
-      
-      // Store in localStorage
-      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('user', JSON.stringify(normalizedUser));
       
       return true;
     } catch (error) {
@@ -60,14 +68,22 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
 
-      const newUser = await registerUser(userData);
-      
-      // Store user data in state
-      setUser(newUser);
+      const newUserResp = await registerUser(userData);
+      const normalizedUser = newUserResp?.user ? {
+        id: newUserResp.user._id || newUserResp.user.id,
+        name: newUserResp.user.fullName || newUserResp.user.name || '',
+        email: newUserResp.user.email,
+        role: newUserResp.user.role || 'client'
+      } : {
+        id: newUserResp?._id || newUserResp?.id,
+        name: newUserResp?.fullName || newUserResp?.name || '',
+        email: newUserResp?.email,
+        role: newUserResp?.role || 'client'
+      };
+
+      setUser(normalizedUser);
       setIsAuthenticated(true);
-      
-      // Store in localStorage
-      localStorage.setItem('user', JSON.stringify(newUser));
+      localStorage.setItem('user', JSON.stringify(normalizedUser));
       
       return true;
     } catch (error) {

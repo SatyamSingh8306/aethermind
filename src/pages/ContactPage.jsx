@@ -420,7 +420,7 @@ const ContactPage = () => {
         </div>
       </section>
 
-      <style jsx>{`
+      <style>{`
         @keyframes shimmer {
           0% {
             transform: translateX(-100%);

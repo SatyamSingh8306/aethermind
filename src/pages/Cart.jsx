@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
+import { createPurchase } from '../services/api';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/Cart.css';
 import { formatInr } from '../utils/currency';
@@ -147,7 +148,17 @@ const Cart = () => {
             <span>{formatInr(getTotalPrice())}</span>
           </div>
           
-          <button className="checkout-btn">
+          <button className="checkout-btn" onClick={async () => {
+            try {
+              for (const item of cartItems) {
+                await createPurchase(item.id, { quantity: item.quantity, source: 'frontend-cart' });
+              }
+              alert('Purchase created successfully. You can view access links in your dashboard.');
+              clearCart();
+            } catch (e) {
+              alert(e.message || 'Failed to create purchase');
+            }
+          }}>
             Proceed to Checkout
           </button>
           

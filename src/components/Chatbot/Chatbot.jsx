@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import './Chatbot.css';
+import { chatProxy, getApiBase } from '../../services/api';
+import { AuthContext } from '../../context/AuthContext';
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([
@@ -20,6 +22,9 @@ const Chatbot = () => {
   
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const { user } = useContext(AuthContext);
+  const API_BASE = getApiBase();
+  const CLIENT_ID = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_CHAT_CLIENT_ID) || 'default';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -62,43 +67,13 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      console.log('Sending message:', currentMessage);
-      console.log('Session ID:', sessionId);
-
-      const response = await fetch('https://aethermind.onrender.com/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          message: currentMessage,
-          session_id: sessionId
-        })
-      });
-
-      console.log('Response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Response error:', errorText);
-        
-        // Implement retry logic
-        if (retryCount < MAX_RETRIES) {
-          setRetryCount(prev => prev + 1);
-          setTimeout(() => {
-            sendMessage();
-          }, RETRY_DELAY * (retryCount + 1));
-          return;
-        }
-        
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-      }
-
-      const data = await response.json();
-      console.log('Response data:', data);
-      
-      if (!data.response) {
+      const payload = {
+        userid: user?.id || user?.email || sessionId,
+        clientid: CLIENT_ID,
+        query: currentMessage
+      };
+      const data = await chatProxy(payload);
+      if (!data?.response) {
         throw new Error('No response received from server');
       }
       
@@ -135,19 +110,8 @@ const Chatbot = () => {
 
   const clearChat = async () => {
     try {
-      console.log('Clearing chat for session:', sessionId);
-      const response = await fetch(`https://aethermind.onrender.com/chat/session/${sessionId}`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-        }
-      });
-      
-      if (response.ok) {
-        console.log('Chat cleared successfully');
-      } else {
-        console.warn('Failed to clear chat on server, clearing locally anyway');
-      }
+      // Optional: could call a backend endpoint to clear session if supported
+      // Not required for current proxy contract
     } catch (error) {
       console.error('Error clearing chat:', error);
     }

@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUser, FaBookmark, FaHistory, FaCog, FaBell, FaChartLine, FaFileAlt, FaQuestionCircle, FaShoppingCart, FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
+import { FaUser, FaBookmark, FaHistory, FaCog, FaBell, FaChartLine, FaFileAlt, FaQuestionCircle, FaShoppingCart, FaTrash, FaMinus, FaPlus, FaLink } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/Dashboard.css';
 import { formatInr } from '../utils/currency';
+import { fetchMyPurchases, getApiBase } from '../services/api';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
   const navigate = useNavigate();
   const { cartItems, removeFromCart, updateQuantity, getTotalPrice } = useCart();
+  const [purchases, setPurchases] = useState([]);
+  const [loadingPurchases, setLoadingPurchases] = useState(false);
+  const [expandedPurchaseId, setExpandedPurchaseId] = useState(null);
+  const API_BASE = getApiBase();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -18,8 +23,29 @@ const Dashboard = () => {
       navigate('/login');
       return;
     }
-    setUser(JSON.parse(storedUser));
+    const u = JSON.parse(storedUser);
+    setUser(u);
+    if (u?.role === 'admin' || u?.role === 'superadmin') {
+      navigate('/admin-dashboard');
+      return;
+    }
   }, [navigate]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setLoadingPurchases(true);
+        const list = await fetchMyPurchases();
+        const arr = Array.isArray(list) ? list : (list?.purchases || []);
+        setPurchases(arr);
+      } catch (e) {
+        setPurchases([]);
+      } finally {
+        setLoadingPurchases(false);
+      }
+    };
+    if (user) load();
+  }, [user]);
 
   if (!user) {
     return (
@@ -131,26 +157,56 @@ const Dashboard = () => {
 
               <div className="content-sections">
                 <div className="content-section">
-                  <h2>Recent Activity</h2>
-                  <div className="activity-list">
-                    {recentActivity.map(activity => (
-                      <div key={activity.id} className="activity-item">
-                        <div className="activity-icon">
-                          <div className={`status-indicator ${activity.status}`}></div>
-                        </div>
-                        <div className="activity-details">
-                          <div className="activity-main">
-                            <h4>{activity.action}</h4>
-                            <span className={`activity-status ${activity.status}`}>
-                              {activity.status}
-                            </span>
+                  <h2>My Purchases</h2>
+                  {loadingPurchases ? (
+                    <div className="activity-list"><div className="activity-item"><div className="activity-details">Loading...</div></div></div>
+                  ) : (
+                    <div className="activity-list">
+                      {purchases.length === 0 ? (
+                        <div className="activity-item"><div className="activity-details">No purchases yet.</div></div>
+                      ) : purchases.map(p => (
+                        <div key={p._id} className="activity-item">
+                          <div className="activity-details" style={{ width: '100%' }}>
+                            <div className="activity-main" style={{ justifyContent: 'space-between' }}>
+                              <h4>{p.productSnapshot?.name || 'Service'}</h4>
+                              <span className={`activity-status ${p.status}`}>{p.status}</span>
+                            </div>
+                            <p className="activity-description">Amount: {(p.currency || 'usd').toUpperCase()} {p.amount}</p>
+                            {p.access?.url && (
+                              <a href={p.access.url} target="_blank" rel="noreferrer" className="quick-link-card" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 10px' }}>
+                                <FaLink /> Access Service
+                              </a>
+                            )}
+
+                            {/* Product-specific details for chat service */}
+                            {p.status === 'completed' && (p.productSnapshot?.name?.toLowerCase().includes('chat') || (p.productSnapshot?.serviceUrl || '').toLowerCase().includes('chat')) && (
+                              <div className="content-section" style={{ marginTop: 12 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <h5>Embed Instructions</h5>
+                                  <button className="nav-item" onClick={() => setExpandedPurchaseId(expandedPurchaseId === p._id ? null : p._id)}>
+                                    {expandedPurchaseId === p._id ? 'Hide' : 'Show'} Code
+                                  </button>
+                                </div>
+                                {expandedPurchaseId === p._id && (
+                                  <div style={{ marginTop: 8 }}>
+                                    <p className="activity-description">Add this script to your site to embed the chatbot:</p>
+                                    <pre style={{ whiteSpace: 'pre-wrap', background: '#0B1020', padding: 12, borderRadius: 8, overflowX: 'auto' }}>
+{`<script src="${API_BASE || 'http://localhost:4000'}/public/widget.js"
+  data-user="${user?.id || user?.email || 'USER_ID'}"
+  data-client="${(p.meta && p.meta.clientId) || 'YOUR_CLIENT_ID'}"
+  data-api="${API_BASE || 'http://localhost:4000'}"
+  async><\/script>`}
+                                    </pre>
+                                    <p className="activity-description">- Replace YOUR_CLIENT_ID with your assigned client id. Admins can set prompts via PUT /api/clients/:clientId.</p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
-                          <p className="activity-time">{activity.time}</p>
-                          <p className="activity-description">{activity.details}</p>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="content-section">

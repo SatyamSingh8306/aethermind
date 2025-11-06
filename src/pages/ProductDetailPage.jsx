@@ -15,7 +15,7 @@ import {
   FaUndo
 } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
-import productsData from '../data/products.json';
+import { fetchProducts, createPaymentOrder, verifyPayment, createPurchase } from '../services/api';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import { formatInr } from '../utils/currency';
 
@@ -26,14 +26,40 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [showAddToCartEffect, setShowAddToCartEffect] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
 
   useEffect(() => {
-    const foundProduct = productsData.find(p => p.id === parseInt(id));
-    if (foundProduct) {
-      setProduct(foundProduct);
-    } else {
-      navigate('/products');
-    }
+    let mounted = true;
+    const load = async () => {
+      try {
+        const apiProducts = await fetchProducts();
+        const root = Array.isArray(apiProducts)
+          ? apiProducts
+          : (apiProducts?.products || apiProducts?.data || apiProducts?.items || []);
+        const list = root.map((p, idx) => ({
+          id: p.productId ?? p.id ?? p._id ?? idx,
+          name: p.name ?? 'Untitled',
+          description: p.description ?? '',
+          price: Number(p.price ?? 0),
+          image: p.image ?? '',
+          category: p.category ?? 'General',
+          features: Array.isArray(p.features) ? p.features : [],
+          status: p.status ?? 'live',
+          serviceUrl: p.serviceUrl ?? ''
+        }));
+        const foundProduct = list.find(p => p.id === parseInt(id));
+        if (!mounted) return;
+        if (foundProduct) {
+          setProduct(foundProduct);
+        } else {
+          navigate('/products');
+        }
+      } catch (e) {
+        navigate('/products');
+      }
+    };
+    load();
+    return () => { mounted = false; };
   }, [id, navigate]);
 
   const handleAddToCart = () => {
@@ -47,6 +73,71 @@ const ProductDetailPage = () => {
       });
       setShowAddToCartEffect(true);
       setTimeout(() => setShowAddToCartEffect(false), 2000);
+    }
+  };
+
+  const loadRazorpay = () => new Promise((resolve, reject) => {
+    if (window.Razorpay) return resolve(true);
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => reject(new Error('Failed to load Razorpay'));
+    document.body.appendChild(script);
+  });
+
+  const handlePurchaseNow = async () => {
+    if (!product) return;
+    try {
+      setIsPaying(true);
+      // Free/manual path
+      if (!product.price || product.price === 0) {
+        await createPurchase(product.id, { source: 'product-detail', quantity });
+        alert('Purchase created successfully');
+        navigate('/dashboard');
+        return;
+      }
+
+      await loadRazorpay();
+      const orderData = await createPaymentOrder(product.id);
+      const keyId = orderData.keyId; // provided by backend
+      const order = orderData.order; // includes id and amount
+
+      const options = {
+        key: keyId,
+        amount: order.amount,
+        currency: order.currency || 'INR',
+        name: 'AetherMind',
+        description: product.name,
+        order_id: order.id,
+        handler: async function (response) {
+          try {
+            const result = await verifyPayment({
+              order_id: response.razorpay_order_id,
+              payment_id: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+              productId: product.id,
+            });
+            alert('Payment successful');
+            navigate('/dashboard');
+          } catch (e) {
+            alert(e.message || 'Payment verification failed');
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            // user closed payment window
+          }
+        },
+        prefill: {},
+        theme: { color: '#6366F1' },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (e) {
+      alert(e.message || 'Unable to initiate payment');
+    } finally {
+      setIsPaying(false);
     }
   };
 
@@ -221,25 +312,16 @@ const ProductDetailPage = () => {
               )}
             </motion.button>
 
-            {product.status === 'live' && product.serviceUrl ? (
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => window.open(product.serviceUrl, '_blank')}
-                className="py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors"
-              >
-                <FaRocket />
-                Try Live Demo
-              </motion.button>
-            ) : (
-              <button
-                disabled
-                className="py-3 bg-gray-700 rounded-lg font-medium text-sm flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"
-              >
-                <FaLock />
-                Coming Soon
-              </button>
-            )}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handlePurchaseNow}
+              disabled={isPaying}
+              className={`py-3 ${isPaying ? 'bg-gray-700' : 'bg-purple-600 hover:bg-purple-700'} rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors`}
+            >
+              <FaRocket />
+              {isPaying ? 'Processing...' : 'Purchase Now'}
+            </motion.button>
           </div>
         </div>
       </motion.div>

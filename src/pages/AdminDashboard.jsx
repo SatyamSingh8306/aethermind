@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUser, FaChartLine, FaBell, FaCog, FaHistory, FaStar, FaBoxes, FaFileAlt, FaLifeRing, FaChevronRight } from 'react-icons/fa';
+import { FaChartLine, FaBell, FaBoxes, FaFileAlt, FaLifeRing, FaChevronRight } from 'react-icons/fa';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/Dashboard.css';
+import { fetchPurchases, fetchPurchasesSummary } from '../services/api';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [notifications, setNotifications] = useState([]);
+  const [purchases, setPurchases] = useState([]);
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,7 +20,31 @@ const Dashboard = () => {
       navigate('/login');
       return;
     }
-    setUser(JSON.parse(storedUser));
+    const u = JSON.parse(storedUser);
+    setUser(u);
+    if (!(u?.role === 'admin' || u?.role === 'superadmin')) {
+      navigate('/dashboard');
+      return;
+    }
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setLoading(true);
+        const [p, s] = await Promise.all([
+          fetchPurchases({ limit: 50 }),
+          fetchPurchasesSummary(),
+        ]);
+        setPurchases(Array.isArray(p) ? p : (p?.purchases || []));
+        setSummary(s);
+      } catch (e) {
+        setPurchases([]);
+        setSummary(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (user) load();
+  }, [user]);
     
     // Simulate fetching notifications
     setTimeout(() => {
@@ -38,10 +66,8 @@ const Dashboard = () => {
   }
 
   const stats = [
-    { title: 'Active Projects', value: '3', icon: <FaChartLine />, color: '#6366F1', trend: 'up', change: '12%' },
-    { title: 'Notifications', value: '5', icon: <FaBell />, color: '#EC4899', trend: 'down', change: '5%' },
-    { title: 'Saved Items', value: '12', icon: <FaStar />, color: '#F59E0B', trend: 'up', change: '24%' },
-    { title: 'Recent Activity', value: '8', icon: <FaHistory />, color: '#10B981', trend: 'steady' }
+    { title: 'Total Purchases', value: String(purchases.length || 0), icon: <FaChartLine />, color: '#6366F1', trend: 'steady', change: '' },
+    { title: 'Notifications', value: String(notifications.filter(n=>!n.read).length), icon: <FaBell />, color: '#EC4899', trend: 'steady', change: '' },
   ];
 
   const recentActivity = [
@@ -146,25 +172,25 @@ const Dashboard = () => {
           <div className="content-row">
             <div className="content-section activity-section">
               <div className="section-header">
-                <h2>Recent Activity</h2>
-                <a href="/activity" className="view-all">View All</a>
+                <h2>Recent Purchases</h2>
+                <span className="view-all">{loading ? 'Loading…' : ''}</span>
               </div>
               <div className="activity-list">
-                {recentActivity.map(activity => (
-                  <div key={activity.id} className="activity-item">
-                    <div className="activity-icon">
-                      <div className={`status-indicator ${activity.status}`}></div>
-                    </div>
+                {(purchases || []).map(p => (
+                  <div key={p._id} className="activity-item">
                     <div className="activity-details">
-                      <div className="activity-main">
-                        <h4>{activity.action}</h4>
-                        <span className={`activity-status ${activity.status}`}>{activity.status}</span>
+                      <div className="activity-main" style={{ justifyContent: 'space-between' }}>
+                        <h4>{p.productSnapshot?.name || 'Service'}</h4>
+                        <span className={`activity-status ${p.status}`}>{p.status}</span>
                       </div>
-                      <p className="activity-time">{activity.time}</p>
-                      <p className="activity-description">{activity.details}</p>
+                      <p className="activity-time">User: {p.user}</p>
+                      <p className="activity-description">Amount: {(p.currency || 'usd').toUpperCase()} {p.amount}</p>
                     </div>
                   </div>
                 ))}
+                {(!purchases || purchases.length === 0) && !loading && (
+                  <div className="activity-item"><div className="activity-details">No purchases found.</div></div>
+                )}
               </div>
             </div>
 

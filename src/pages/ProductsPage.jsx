@@ -12,7 +12,7 @@ import {
   FaBolt,
   FaChartLine
 } from 'react-icons/fa';
-import productsData from '../data/products.json';
+import { fetchProducts } from '../services/api';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import { formatInr } from '../utils/currency';
 import { useCart } from '../context/CartContext';
@@ -26,9 +26,48 @@ const ProductsPage = () => {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    setProducts(productsData);
-    setTimeout(() => setIsLoading(false), 500);
+    let mounted = true;
+    const load = async () => {
+      try {
+        // serve cached products instantly if available to avoid blank on back nav
+        const cached = sessionStorage.getItem('products_cache');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && mounted) {
+            setProducts(parsed);
+            setIsLoading(false);
+          }
+        }
+      } catch {}
+      try {
+        const apiProducts = await fetchProducts();
+        if (!mounted) return;
+        const root = Array.isArray(apiProducts)
+          ? apiProducts
+          : (apiProducts?.products || apiProducts?.data || apiProducts?.items || []);
+        const mapped = root.map((p, idx) => ({
+          id: p.productId ?? p.id ?? p._id ?? idx,
+          name: p.name ?? 'Untitled',
+          description: p.description ?? '',
+          price: Number(p.price ?? 0),
+          image: p.image ?? '',
+          category: p.category ?? 'General',
+          features: Array.isArray(p.features) ? p.features : [],
+          status: p.status ?? 'live',
+          serviceUrl: p.serviceUrl ?? ''
+        }));
+        try { sessionStorage.setItem('products_cache', JSON.stringify(mapped)); } catch {}
+        setProducts(mapped);
+      } catch (e) {
+        console.error('Failed to load products', e);
+        // Keep previously shown products instead of clearing on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
     window.scrollTo(0, 0);
+    return () => { mounted = false; };
   }, []);
 
   // Get unique categories
@@ -153,9 +192,9 @@ const ProductsPage = () => {
               animate="visible"
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
             >
-              {filteredProducts.map((product) => (
+              {filteredProducts.map((product, idx) => (
                 <motion.div
-                  key={product.id}
+                  key={`${product.id ?? 'p'}-${idx}`}
                   variants={itemVariants}
                   whileHover={{ y: -5 }}
                   className="group relative"
