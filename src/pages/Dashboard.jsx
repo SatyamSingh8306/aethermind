@@ -1,21 +1,49 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUser, FaBookmark, FaHistory, FaCog, FaBell, FaChartLine, FaFileAlt, FaQuestionCircle, FaShoppingCart, FaTrash, FaMinus, FaPlus, FaLink } from 'react-icons/fa';
-import { useCart } from '../context/CartContext';
+import {
+  FaShoppingCart,
+  FaCog,
+  FaCopy,
+  FaCheck,
+  FaRobot,
+  FaCode,
+  FaInfoCircle,
+  FaSignOutAlt,
+  FaSave,
+  FaExclamationTriangle
+} from 'react-icons/fa';
 import BackgroundAnimation from '../components/BackgroundAnimation';
 import '../styles/Dashboard.css';
-import { formatInr } from '../utils/currency';
-import { fetchMyPurchases, getApiBase } from '../services/api';
+import {
+  fetchMyPurchases,
+  getIntegrationScript,
+  setupSystemPrompt
+} from '../services/api';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
   const navigate = useNavigate();
-  const { cartItems, removeFromCart, updateQuantity, getTotalPrice } = useCart();
+
+  // Data States
   const [purchases, setPurchases] = useState([]);
   const [loadingPurchases, setLoadingPurchases] = useState(false);
-  const [expandedPurchaseId, setExpandedPurchaseId] = useState(null);
-  const API_BASE = getApiBase();
+  const [integrationScripts, setIntegrationScripts] = useState({});
+
+  // UI States
+  const [copiedMap, setCopiedMap] = useState({});
+  const [activeTab, setActiveTab] = useState('chatbot');
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
+
+  // System Prompt States
+  const [promptInputs, setPromptInputs] = useState({});
+  const [savingPrompt, setSavingPrompt] = useState({});
+
+  // Handle Resize for Responsive Sidebar
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1000);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -38,7 +66,25 @@ const Dashboard = () => {
         const list = await fetchMyPurchases();
         const arr = Array.isArray(list) ? list : (list?.purchases || []);
         setPurchases(arr);
+
+        const chatbotPurchases = arr.filter(p =>
+          p.status === 'completed' &&
+          isChatbotProduct(p)
+        );
+
+        for (const purchase of chatbotPurchases) {
+          const clientId = getClientId(purchase);
+          if (clientId) {
+            try {
+              const integration = await getIntegrationScript(clientId);
+              setIntegrationScripts(prev => ({ ...prev, [purchase._id]: integration }));
+            } catch (e) {
+              console.log('Integration script not ready for:', clientId);
+            }
+          }
+        }
       } catch (e) {
+        console.error("Error loading purchases", e);
         setPurchases([]);
       } finally {
         setLoadingPurchases(false);
@@ -47,289 +93,426 @@ const Dashboard = () => {
     if (user) load();
   }, [user]);
 
+  const handleCopy = (key, text) => {
+    if (text) {
+      navigator.clipboard.writeText(text);
+      setCopiedMap(prev => ({ ...prev, [key]: true }));
+      setTimeout(() => {
+        setCopiedMap(prev => {
+          const newState = { ...prev };
+          delete newState[key];
+          return newState;
+        });
+      }, 2000);
+    }
+  };
+
+  const isChatbotProduct = (purchase) => {
+    return purchase.status === 'completed' &&
+      (purchase.clientId ||
+        purchase.purchase?.clientId ||
+        purchase.productSnapshot?.productId === 101 ||
+        purchase.productSnapshot?.name?.toLowerCase().includes('chat') ||
+        (purchase.productSnapshot?.serviceUrl || '').toLowerCase().includes('chat'));
+  };
+
+  const getClientId = (purchase) => {
+    return purchase.clientId || purchase.purchase?.clientId;
+  };
+
+  const handlePromptChange = (clientId, value) => {
+    setPromptInputs(prev => ({ ...prev, [clientId]: value }));
+  };
+
+  const handleSaveSystemPrompt = async (clientId, purchaseId) => {
+    const promptText = promptInputs[clientId];
+
+    if (!promptText || promptText.trim().length < 5) {
+      alert("Please enter a valid system prompt (at least 5 characters).");
+      return;
+    }
+
+    setSavingPrompt(prev => ({ ...prev, [clientId]: true }));
+
+    try {
+      await setupSystemPrompt(clientId, { system_prompt: promptText });
+      const integration = await getIntegrationScript(clientId);
+      setIntegrationScripts(prev => ({ ...prev, [purchaseId]: integration }));
+      alert("System prompt saved successfully! Your chatbot is updated.");
+    } catch (error) {
+      console.error(error);
+      alert(`Failed to save prompt: ${error.message || "Unknown error"}`);
+    } finally {
+      setSavingPrompt(prev => ({ ...prev, [clientId]: false }));
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   if (!user) {
     return (
-      <div className="dashboard-loading">
-        <div className="loader"></div>
+      <div className="dashboard-loading" style={{ padding: '100px', textAlign: 'center', color: '#fff' }}>
+        <div className="loader" style={{ margin: '0 auto 20px' }}></div>
         <p>Loading your dashboard...</p>
       </div>
     );
   }
 
-  const userStats = [
-    { title: 'Cart Items', value: cartItems.length.toString(), icon: <FaShoppingCart />, color: '#6366F1' },
-    { title: 'Saved Items', value: '12', icon: <FaBookmark />, color: '#10B981' },
-    { title: 'Recent Activity', value: '8', icon: <FaHistory />, color: '#F59E0B' },
-    { title: 'Documents', value: '5', icon: <FaFileAlt />, color: '#EC4899' }
-  ];
-
-  const recentActivity = [
-    { id: 1, action: 'Document Viewed', time: '2 hours ago', status: 'completed', details: 'Viewed product documentation' },
-    { id: 2, action: 'Profile Updated', time: '1 day ago', status: 'completed', details: 'Updated contact information' },
-    { id: 3, action: 'Support Ticket', time: '2 days ago', status: 'pending', details: 'Submitted technical support request' }
-  ];
-
-  const quickLinks = [
-    { title: 'Documentation', icon: <FaFileAlt />, link: '/documentation', color: '#6366F1' },
-    { title: 'Support', icon: <FaQuestionCircle />, link: '/support', color: '#10B981' },
-    { title: 'Settings', icon: <FaCog />, link: '/settings', color: '#F59E0B' },
-    { title: 'Profile', icon: <FaUser />, link: '/profile', color: '#EC4899' }
-  ];
+  const chatbotProducts = purchases.filter(isChatbotProduct);
 
   return (
-    <div className="dashboard">
+    <div style={{ position: 'relative', width: '100%', minHeight: '80vh' }}>
       <BackgroundAnimation />
-      <div className="dashboard-header">
-        <div className="welcome-section">
-          <h1>Welcome back, {user.name}!</h1>
-          <p>Here's your personalized dashboard</p>
-        </div>
-      </div>
 
-      <div className="dashboard-main">
-        <div className="dashboard-sidebar">
-          <div className="profile-card">
-            <div className="profile-avatar">
-              {user.name.charAt(0).toUpperCase()}
-            </div>
-            <div className="profile-info">
-              <h3>{user.name}</h3>
-              <p>{user.email}</p>
-              <span className="role-badge">User</span>
-            </div>
+      <div className="dashboard-container" style={{
+        maxWidth: '1280px',
+        margin: '0 auto',
+        padding: '40px 20px',
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: 'flex-start', // This ensures the sticky sidebar works correctly
+        gap: '30px',
+        position: 'relative',
+        zIndex: 2
+      }}>
+
+        {/* 
+          SIDEBAR
+          We use position: sticky and height: calc(100vh - 80px)
+          This makes it fill the screen height and follow you as you scroll 
+        */}
+        <aside style={{
+          width: isMobile ? '100%' : '280px',
+          flexShrink: 0,
+          background: 'rgba(17, 24, 39, 0.8)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '16px',
+          padding: '24px',
+          backdropFilter: 'blur(12px)',
+          display: 'flex',
+          flexDirection: 'column',
+          // STICKY LOGIC:
+          position: isMobile ? 'static' : 'sticky',
+          top: isMobile ? 'auto' : '20px', // Gap from top of browser window
+          height: isMobile ? 'auto' : 'calc(100vh - 40px)', // Full screen height minus padding
+          overflowY: 'auto'
+        }}>
+          <div style={{ marginBottom: '30px', paddingBottom: '20px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+            <h2 style={{ fontSize: '1.4rem', color: '#fff', margin: 0, fontWeight: '700' }}>Dashboard</h2>
+            <p style={{ color: '#9CA3AF', fontSize: '0.9rem', marginTop: '4px' }}>Welcome, {user.name}</p>
           </div>
-          
-          <nav className="dashboard-nav">
-            <button 
-              className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-              onClick={() => setActiveTab('overview')}
+
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <button
+              onClick={() => setActiveTab('chatbot')}
+              style={{
+                width: '100%',
+                padding: '14px 16px',
+                background: activeTab === 'chatbot' ? 'linear-gradient(90deg, #6366F1 0%, #4F46E5 100%)' : 'transparent',
+                border: 'none',
+                borderRadius: '12px',
+                color: activeTab === 'chatbot' ? 'white' : '#9CA3AF',
+                textAlign: 'left',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                fontSize: '0.95rem',
+                fontWeight: activeTab === 'chatbot' ? '600' : '500'
+              }}
             >
-              <FaChartLine /> Overview
+              <FaRobot size={18} /> AI Chatbot
             </button>
-            <button 
-              className={`nav-item ${activeTab === 'cart' ? 'active' : ''}`}
+
+            <button
               onClick={() => navigate('/cart')}
+              style={{
+                width: '100%',
+                padding: '14px 16px',
+                background: 'transparent',
+                border: 'none',
+                borderRadius: '12px',
+                color: '#9CA3AF',
+                textAlign: 'left',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                fontSize: '0.95rem',
+                fontWeight: '500'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#9CA3AF'}
             >
-              <FaShoppingCart /> Cart
+              <FaShoppingCart size={18} /> My Cart
             </button>
-            <button 
-              className={`nav-item ${activeTab === 'documents' ? 'active' : ''}`}
-              onClick={() => setActiveTab('documents')}
-            >
-              <FaFileAlt /> Documents
-            </button>
-            <button 
-              className={`nav-item ${activeTab === 'activity' ? 'active' : ''}`}
-              onClick={() => setActiveTab('activity')}
-            >
-              <FaHistory /> Activity
-            </button>
-            <button 
-              className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
-              onClick={() => setActiveTab('settings')}
-            >
-              <FaCog /> Settings
-            </button>
-          </nav>
-        </div>
+          </div>
 
-        <div className="dashboard-content">
-          {activeTab === 'overview' && (
+          <button
+            onClick={handleLogout}
+            style={{
+              marginTop: '40px',
+              padding: '14px 16px',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              borderRadius: '12px',
+              color: '#F87171',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              cursor: 'pointer',
+              fontWeight: '500'
+            }}
+          >
+            <FaSignOutAlt /> Logout
+          </button>
+        </aside>
+
+        {/* MAIN CONTENT */}
+        <main style={{ flex: 1, minWidth: 0 }}>
+
+          {loadingPurchases ? (
+            <div className="content-section" style={{ textAlign: 'center', padding: '60px', background: 'rgba(17,24,39,0.5)', borderRadius: '16px' }}>
+              <div className="loader" style={{ margin: '0 auto 20px' }}></div>
+              <p style={{ color: '#D1D5DB' }}>Loading your subscriptions...</p>
+            </div>
+          ) : activeTab === 'chatbot' ? (
             <>
-              <div className="stats-grid">
-                {userStats.map((stat, index) => (
-                  <div 
-                    key={index} 
-                    className={`stat-card ${stat.title === 'Cart Items' ? 'clickable' : ''}`}
-                    style={{ borderColor: stat.color }}
-                    onClick={() => stat.title === 'Cart Items' && navigate('/cart')}
-                  >
-                    <div className="stat-icon" style={{ color: stat.color }}>
-                      {stat.icon}
-                    </div>
-                    <div className="stat-info">
-                      <h3>{stat.title}</h3>
-                      <p>{stat.value}</p>
-                    </div>
+              <header style={{ marginBottom: '30px' }}>
+                <h1 style={{ fontSize: '2rem', marginBottom: '10px', fontWeight: '700', color: '#fff' }}>Configuration</h1>
+                <p style={{ color: '#9CA3AF', fontSize: '1.05rem' }}>Define your AI's personality and get your integration code.</p>
+              </header>
+
+              {chatbotProducts.length === 0 ? (
+                <div className="content-section" style={{ textAlign: 'center', padding: '60px', background: 'rgba(17, 24, 39, 0.6)', borderRadius: '16px', border: '1px solid #374151' }}>
+                  <div style={{ background: 'rgba(99, 102, 241, 0.1)', width: '80px', height: '80px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                    <FaRobot size={40} color="#6366F1" />
                   </div>
-                ))}
-              </div>
-
-              <div className="content-sections">
-                <div className="content-section">
-                  <h2>My Purchases</h2>
-                  {loadingPurchases ? (
-                    <div className="activity-list"><div className="activity-item"><div className="activity-details">Loading...</div></div></div>
-                  ) : (
-                    <div className="activity-list">
-                      {purchases.length === 0 ? (
-                        <div className="activity-item"><div className="activity-details">No purchases yet.</div></div>
-                      ) : purchases.map(p => (
-                        <div key={p._id} className="activity-item">
-                          <div className="activity-details" style={{ width: '100%' }}>
-                            <div className="activity-main" style={{ justifyContent: 'space-between' }}>
-                              <h4>{p.productSnapshot?.name || 'Service'}</h4>
-                              <span className={`activity-status ${p.status}`}>{p.status}</span>
-                            </div>
-                            <p className="activity-description">Amount: {(p.currency || 'usd').toUpperCase()} {p.amount}</p>
-                            {p.access?.url && (
-                              <a href={p.access.url} target="_blank" rel="noreferrer" className="quick-link-card" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 10px' }}>
-                                <FaLink /> Access Service
-                              </a>
-                            )}
-
-                            {/* Product-specific details for chat service */}
-                            {p.status === 'completed' && (p.productSnapshot?.name?.toLowerCase().includes('chat') || (p.productSnapshot?.serviceUrl || '').toLowerCase().includes('chat')) && (
-                              <div className="content-section" style={{ marginTop: 12 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <h5>Embed Instructions</h5>
-                                  <button className="nav-item" onClick={() => setExpandedPurchaseId(expandedPurchaseId === p._id ? null : p._id)}>
-                                    {expandedPurchaseId === p._id ? 'Hide' : 'Show'} Code
-                                  </button>
-                                </div>
-                                {expandedPurchaseId === p._id && (
-                                  <div style={{ marginTop: 8 }}>
-                                    <p className="activity-description">Add this script to your site to embed the chatbot:</p>
-                                    <pre style={{ whiteSpace: 'pre-wrap', background: '#0B1020', padding: 12, borderRadius: 8, overflowX: 'auto' }}>
-{`<script src="${API_BASE || 'http://localhost:4000'}/public/widget.js"
-  data-user="${user?.id || user?.email || 'USER_ID'}"
-  data-client="${(p.meta && p.meta.clientId) || 'YOUR_CLIENT_ID'}"
-  data-api="${API_BASE || 'http://localhost:4000'}"
-  async><\/script>`}
-                                    </pre>
-                                    <p className="activity-description">- Replace YOUR_CLIENT_ID with your assigned client id. Admins can set prompts via PUT /api/clients/:clientId.</p>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="content-section">
-                  <h2>Quick Links</h2>
-                  <div className="quick-links-grid">
-                    {quickLinks.map((link, index) => (
-                      <a 
-                        key={index} 
-                        href={link.link} 
-                        className="quick-link-card"
-                        style={{ borderColor: link.color }}
-                      >
-                        <div className="link-icon" style={{ color: link.color }}>
-                          {link.icon}
-                        </div>
-                        <div className="link-content">
-                          <h3>{link.title}</h3>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-
-          {activeTab === 'cart' && (
-            <div className="cart-section">
-              <h2>Shopping Cart</h2>
-              {cartItems.length === 0 ? (
-                <div className="empty-cart">
-                  <p>Your cart is empty</p>
-                  <button 
+                  <h3 style={{ fontSize: '1.5rem', marginBottom: '12px', color: '#fff' }}>No Active Chatbot Subscriptions</h3>
+                  <p style={{ color: '#9CA3AF', marginBottom: '32px' }}>You need to purchase a chatbot plan to start configuring your AI.</p>
+                  <button
                     className="primary-btn"
                     onClick={() => navigate('/products')}
+                    style={{ padding: '12px 32px', fontSize: '1rem', cursor: 'pointer' }}
                   >
                     Browse Products
                   </button>
                 </div>
               ) : (
-                <>
-                  <div className="cart-items">
-                    {cartItems.map((item) => (
-                      <div key={item.id} className="cart-item">
-                        <div className="item-image">
-                          <img src={item.image} alt={item.name} />
+                chatbotProducts.map(p => {
+                  const clientId = getClientId(p);
+                  const integration = integrationScripts[p._id];
+                  const isSaving = savingPrompt[clientId] || false;
+
+                  return (
+                    <div key={p._id} style={{
+                      background: 'rgba(17, 24, 39, 0.9)',
+                      borderRadius: '20px',
+                      border: '1px solid #374151',
+                      padding: '32px',
+                      marginBottom: '30px',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+                    }}>
+
+                      {/* Header */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid #374151', paddingBottom: '20px' }}>
+                        <div>
+                          <h3 style={{ margin: 0, fontSize: '1.4rem', color: '#fff' }}>{p.productSnapshot?.name || 'AI Chatbot'}</h3>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+                            <span style={{
+                              display: 'inline-block',
+                              width: '8px',
+                              height: '8px',
+                              borderRadius: '50%',
+                              background: p.status === 'completed' ? '#10B981' : '#F59E0B'
+                            }}></span>
+                            <span style={{ fontSize: '0.9rem', color: '#9CA3AF', textTransform: 'capitalize' }}>{p.status}</span>
+                          </div>
                         </div>
-                        
-                        <div className="item-details">
-                          <h3>{item.name}</h3>
-                          <p className="item-price">{formatInr(item.price)}</p>
-                        </div>
-                        
-                        <div className="quantity-controls">
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="quantity-btn"
-                            aria-label="Decrease quantity"
-                          >
-                            <FaMinus />
-                          </button>
-                          
-                          <span className="quantity">{item.quantity}</span>
-                          
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="quantity-btn"
-                            aria-label="Increase quantity"
-                          >
-                            <FaPlus />
-                          </button>
-                        </div>
-                        
-                        <div className="item-total">
-                          {formatInr(item.price * item.quantity)}
-                        </div>
-                        
-                        <button 
-                          onClick={() => removeFromCart(item.id)}
-                          className="remove-btn"
-                          aria-label="Remove item"
+                      </div>
+
+                      {/* Prompt Config */}
+                      <div style={{ marginBottom: '32px' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#E5E7EB', marginBottom: '12px', fontSize: '1rem', fontWeight: '600' }}>
+                          <FaCog className="text-indigo-500" /> Configure Personality
+                        </label>
+                        <p style={{ fontSize: '0.9rem', color: '#9CA3AF', marginBottom: '12px' }}>
+                          Tell the AI how to behave (e.g., "You are a helpful support agent").
+                        </p>
+                        <textarea
+                          value={promptInputs[clientId] !== undefined ? promptInputs[clientId] : ''}
+                          onChange={(e) => handlePromptChange(clientId, e.target.value)}
+                          placeholder="Enter system prompt here..."
+                          style={{
+                            width: '100%',
+                            minHeight: '120px',
+                            background: '#0B101F',
+                            border: '1px solid #4B5563',
+                            borderRadius: '12px',
+                            padding: '16px',
+                            color: '#fff',
+                            fontSize: '0.95rem',
+                            lineHeight: '1.5',
+                            resize: 'vertical',
+                            marginBottom: '16px',
+                            fontFamily: 'inherit'
+                          }}
+                        />
+                        <button
+                          onClick={() => handleSaveSystemPrompt(clientId, p._id)}
+                          disabled={isSaving}
+                          className="primary-btn"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '10px 20px',
+                            borderRadius: '8px',
+                            background: '#4F46E5',
+                            color: 'white',
+                            border: 'none',
+                            opacity: isSaving ? 0.7 : 1,
+                            cursor: isSaving ? 'wait' : 'pointer'
+                          }}
                         >
-                          <FaTrash />
+                          {isSaving ? <div className="loader-sm"></div> : <FaSave />}
+                          {isSaving ? 'Saving...' : 'Save Personality'}
                         </button>
                       </div>
-                    ))}
-                  </div>
 
-                  <div className="cart-summary">
-                    <div className="summary-row">
-                      <span>Subtotal</span>
-                      <span>{formatInr(getTotalPrice())}</span>
+                      {/* Client ID */}
+                      <div style={{ marginBottom: '32px', padding: '20px', background: '#1F2937', borderRadius: '12px', border: '1px solid #374151' }}>
+                        <label style={{ display: 'block', color: '#9CA3AF', marginBottom: '8px', fontSize: '0.85rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          Your Client ID
+                        </label>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                          <code style={{
+                            flex: 1,
+                            minWidth: '200px',
+                            color: '#10B981',
+                            fontFamily: 'monospace',
+                            fontSize: '1.1rem',
+                            fontWeight: '600',
+                            wordBreak: 'break-all'
+                          }}>
+                            {clientId || 'Processing...'}
+                          </code>
+                          <button
+                            onClick={() => handleCopy(`client-${p._id}`, clientId)}
+                            style={{
+                              background: 'rgba(16, 185, 129, 0.1)',
+                              border: '1px solid rgba(16, 185, 129, 0.2)',
+                              borderRadius: '8px',
+                              color: '#10B981',
+                              padding: '8px 16px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            {copiedMap[`client-${p._id}`] ? <><FaCheck /> Copied</> : <><FaCopy /> Copy ID</>}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Integration Code */}
+                      <div style={{ marginBottom: '32px' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#E5E7EB', marginBottom: '12px', fontSize: '1rem', fontWeight: '600' }}>
+                          <FaCode /> Integration Code
+                        </label>
+
+                        {integration?.scriptTag ? (
+                          <div style={{ position: 'relative' }}>
+                            <pre style={{
+                              background: '#000',
+                              padding: '24px',
+                              borderRadius: '12px',
+                              overflowX: 'auto',
+                              border: '1px solid #374151',
+                              margin: 0
+                            }}>
+                              <code style={{ color: '#D1D5DB', fontSize: '0.9rem', fontFamily: 'Consolas, Monaco, "Andale Mono", monospace', lineHeight: '1.6' }}>
+                                {integration.scriptTag}
+                              </code>
+                            </pre>
+                            <button
+                              onClick={() => handleCopy(`script-${p._id}`, integration.scriptTag)}
+                              style={{
+                                position: 'absolute',
+                                top: '16px',
+                                right: '16px',
+                                background: '#4F46E5',
+                                border: 'none',
+                                borderRadius: '6px',
+                                color: 'white',
+                                padding: '8px 12px',
+                                fontSize: '0.85rem',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                              }}
+                            >
+                              {copiedMap[`script-${p._id}`] ? <><FaCheck /> Copied</> : <><FaCopy /> Copy Code</>}
+                            </button>
+                          </div>
+                        ) : (
+                          <div style={{
+                            padding: '20px',
+                            background: 'rgba(245, 158, 11, 0.1)',
+                            border: '1px solid rgba(245, 158, 11, 0.2)',
+                            borderRadius: '12px',
+                            color: '#F59E0B',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px'
+                          }}>
+                            <FaExclamationTriangle />
+                            <span>Please <strong>Save Personality</strong> above to generate your integration script.</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Dev Note */}
+                      <div style={{
+                        background: 'rgba(59, 130, 246, 0.08)',
+                        border: '1px solid rgba(59, 130, 246, 0.2)',
+                        padding: '20px',
+                        borderRadius: '12px',
+                        display: 'flex',
+                        gap: '16px',
+                        alignItems: 'flex-start'
+                      }}>
+                        <FaInfoCircle style={{ color: '#60A5FA', fontSize: '1.4rem', flexShrink: 0, marginTop: '2px' }} />
+                        <div>
+                          <h4 style={{ color: '#93C5FD', margin: '0 0 8px 0', fontSize: '1rem', fontWeight: '600' }}>Developer Note</h4>
+                          <p style={{ color: '#BFDBFE', fontSize: '0.9rem', margin: 0, lineHeight: '1.6' }}>
+                            The <code>data-client-id</code> connects the widget to this specific bot.
+                            To test as a fresh user, use an <strong>Incognito Window</strong>.
+                          </p>
+                        </div>
+                      </div>
+
                     </div>
-                    
-                    <div className="summary-row">
-                      <span>Shipping</span>
-                      <span>Free</span>
-                    </div>
-                    
-                    <div className="summary-row total">
-                      <span>Total</span>
-                      <span>{formatInr(getTotalPrice())}</span>
-                    </div>
-                    
-                    <button className="checkout-btn">
-                      Proceed to Checkout
-                    </button>
-                    
-                    <button 
-                      onClick={() => navigate('/products')}
-                      className="continue-shopping-btn"
-                    >
-                      Continue Shopping
-                    </button>
-                  </div>
-                </>
+                  );
+                })
               )}
-            </div>
-          )}
-        </div>
+            </>
+          ) : null}
+        </main>
       </div>
     </div>
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

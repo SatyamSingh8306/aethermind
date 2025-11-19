@@ -27,6 +27,9 @@ import NotFound from './pages/NotFound'
 import { CartProvider } from './context/CartContext'
 import Cart from './pages/Cart'
 import Chatbot from './components/Chatbot/Chatbot'
+import ProductSetupPage from './pages/products/ProductSetupPage'
+import SetupPromptPage from './pages/SetupPromptPage'
+import IntegrationPage from './pages/IntegrationPage'
 import './App.css'
 
 function App() {
@@ -61,6 +64,7 @@ function App() {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/products" element={<ProductsPage />} />
                   <Route path="/products/:id" element={<ProductDetailPage />} />
+                  <Route path="/products/:id/setup" element={<ProductSetupPage />} />
                   <Route path="/services" element={<ServicesPage />} />
                   <Route path="/services/:serviceId" element={<ServiceDetailPage />} />
                   <Route path="/about" element={<AboutPage />} />
@@ -78,6 +82,8 @@ function App() {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/admin-dashboard" element={<AdminDashboard />} />
                   <Route path="/cart" element={<Cart />} />
+                  <Route path="/setup-prompt" element={<SetupPromptPage />} />
+                  <Route path="/integration" element={<IntegrationPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>

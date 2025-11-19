@@ -1,3 +1,4 @@
+// src/pages/ProductDetailPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -12,7 +13,8 @@ import {
   FaCheckCircle,
   FaTruck,
   FaShieldAlt,
-  FaUndo
+  FaUndo,
+  FaPlay
 } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { fetchProducts, createPaymentOrder, verifyPayment, createPurchase } from '../services/api';
@@ -45,9 +47,10 @@ const ProductDetailPage = () => {
           category: p.category ?? 'General',
           features: Array.isArray(p.features) ? p.features : [],
           status: p.status ?? 'live',
-          serviceUrl: p.serviceUrl ?? ''
+          serviceUrl: p.serviceUrl ?? '',
+          demoUrl: p.demoUrl ?? p.demo_link ?? p.demo ?? p.videoUrl ?? '' // demo url mapping
         }));
-        const foundProduct = list.find(p => p.id === parseInt(id));
+        const foundProduct = list.find(p => String(p.id) === String(id));
         if (!mounted) return;
         if (foundProduct) {
           setProduct(foundProduct);
@@ -111,14 +114,22 @@ const ProductDetailPage = () => {
         order_id: order.id,
         handler: async function (response) {
           try {
+            // Use exact keys expected by backend
             const result = await verifyPayment({
-              order_id: response.razorpay_order_id,
-              payment_id: response.razorpay_payment_id,
-              signature: response.razorpay_signature,
-              productId: product.id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              productId: product.id
             });
-            alert('Payment successful');
-            navigate('/dashboard');
+            
+            // Check if this is AI Chatbot product (productId 101) and has clientId
+            if (result.clientId && (product.id === 101 || product.name?.toLowerCase().includes('chatbot'))) {
+              // Redirect to setup prompt page
+              navigate(`/setup-prompt?clientId=${result.clientId}`);
+            } else {
+              alert('Payment successful');
+              navigate('/dashboard');
+            }
           } catch (e) {
             alert(e.message || 'Payment verification failed');
           }
@@ -142,6 +153,19 @@ const ProductDetailPage = () => {
   };
 
   if (!product) return null;
+
+  // Demo visibility and link
+  const hasDemo =
+    Boolean(product.demoUrl) ||
+    /portfolio/i.test(product.category || '') ||
+    /portfolio/i.test(product.name || '');
+
+  const demoHref =
+    product.demoUrl ||
+    `https://portfolio-service-seven.vercel.app/`;
+
+  // Grid columns: 3 buttons by default (Add, Buy, Setup). If demo exists, 4 buttons.
+  const actionGridCols = hasDemo ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2 md:grid-cols-3';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -289,14 +313,15 @@ const ProductDetailPage = () => {
           </div>
 
           {/* Action Buttons - Bottom */}
-          <div className="grid grid-cols-2 gap-3 mt-auto">
+          <div className={`grid ${actionGridCols} gap-3 mt-auto`}>
+            {/* Add to Cart */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleAddToCart}
               className={`py-3 ${showAddToCartEffect
-                  ? 'bg-green-600'
-                  : 'bg-indigo-600 hover:bg-indigo-700'
+                ? 'bg-green-600'
+                : 'bg-indigo-600 hover:bg-indigo-700'
                 } rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors`}
             >
               {showAddToCartEffect ? (
@@ -312,7 +337,8 @@ const ProductDetailPage = () => {
               )}
             </motion.button>
 
-            <motion.button
+            {/* Purchase Now */}
+            {/* <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handlePurchaseNow}
@@ -321,7 +347,35 @@ const ProductDetailPage = () => {
             >
               <FaRocket />
               {isPaying ? 'Processing...' : 'Purchase Now'}
+            </motion.button> */}
+
+            {/* Setup & Integration (form) */}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate(`/products/${product.id}/setup?qty=${quantity}`)}
+              className="py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors"
+              title="Collect integration details and (optionally) pay a token amount"
+            >
+              <FaLock />
+              Setup & Integration
             </motion.button>
+
+            {/* Product Demo */}
+            {hasDemo && (
+              <motion.a
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                href={demoHref}
+                target={product.demoUrl ? '_blank' : undefined}
+                rel={product.demoUrl ? 'noopener noreferrer' : undefined}
+                className="py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors"
+                title="Watch demo or open demo portfolio"
+              >
+                <FaPlay />
+                Product Demo
+              </motion.a>
+            )}
           </div>
         </div>
       </motion.div>

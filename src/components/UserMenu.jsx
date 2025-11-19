@@ -1,4 +1,3 @@
-// src/components/UserMenu.jsx
 import { Link } from 'react-router-dom';
 import {
     FaUser,
@@ -12,10 +11,10 @@ import {
 const UserMenu = ({ user, onLogout, onClose, isLoggingOut }) => {
     const menuItems = [
         { path: '/dashboard', icon: FaTachometerAlt, label: 'Dashboard' },
-        { path: '/profile', icon: FaUser, label: 'Profile' },
-        { path: '/orders', icon: FaShoppingBag, label: 'My Orders' },
-        { path: '/wishlist', icon: FaHeart, label: 'Wishlist' },
-        { path: '/settings', icon: FaCog, label: 'Settings' },
+        // { path: '/profile', icon: FaUser, label: 'Profile' },
+        // { path: '/orders', icon: FaShoppingBag, label: 'My Orders' },
+        // { path: '/wishlist', icon: FaHeart, label: 'Wishlist' },
+        // { path: '/settings', icon: FaCog, label: 'Settings' },
     ];
 
     return (

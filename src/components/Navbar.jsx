@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import { useState, useEffect, useContext, useCallback, useMemo, useRef, lazy, Suspense } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -379,7 +378,7 @@ const Navbar = () => {
 
               {isAuthenticated && (
                 <>
-                  <button
+                  {/* <button
                     className="relative p-2 rounded-lg hover:bg-white/10 text-slate-400 
                              hover:text-cyan-400 transition-all duration-200
                              focus:outline-none focus:ring-2 focus:ring-cyan-400"
@@ -387,7 +386,7 @@ const Navbar = () => {
                   >
                     <FaBell className="w-5 h-5" />
                     <NotificationBadge count={notifications} />
-                  </button>
+                  </button> */}
 
                   <CartIcon totalItems={totalItems} />
 

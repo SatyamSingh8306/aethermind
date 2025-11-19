@@ -1,4 +1,4 @@
-//eslint-disable-next-line
+// eslint-disable-next-line
 const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_BACKEND_API_BASE) || 'http://localhost:4000';
 
 async function handleResponse(res) {
@@ -16,7 +16,7 @@ async function handleResponse(res) {
 
 export function getAuthHeaders() {
   let token = null;
-  try { token = localStorage.getItem('token'); } catch {}
+  try { token = localStorage.getItem('token'); } catch { }
   const headers = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
   return headers;
@@ -77,23 +77,92 @@ export async function fetchPurchasesSummary() {
   return await handleResponse(res);
 }
 
-// Payments (Razorpay)
-export async function createPaymentOrder(productId) {
+/**
+ * Payments (Razorpay)
+ * Now supports optional custom amount (in paise) + meta.
+ * - Default: backend computes full amount from productId.
+ * - Custom/token: pass { amountPaise: 100 } for ₹1 token.
+ */
+export async function createPaymentOrder(productId, opts = {}) {
+  const payload = { productId };
+  if (opts.amountPaise != null) payload.amount = opts.amountPaise; // in paise
+  if (opts.meta) payload.meta = opts.meta;
   const res = await fetch(`${API_BASE}/api/payments/create-order`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify({ productId })
+    body: JSON.stringify(payload)
   });
   return await handleResponse(res);
 }
 
-export async function verifyPayment({ order_id, payment_id, signature, productId }) {
+// Loosened to accept extra fields if you want (mode/amount/etc). Existing calls still work.
+export async function verifyPayment(payload) {
   const res = await fetch(`${API_BASE}/api/payments/verify`, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify({ order_id, payment_id, signature, productId })
+    body: JSON.stringify(payload)
   });
   return await handleResponse(res);
 }
 
+/**
+ * Integration intents (collect setup details)
+ * POST /api/products/:id/integration-intents
+ */
+export async function createIntegrationIntent(productId, payload) {
+  const res = await fetch(`${API_BASE}/api/products/${productId}/integration-intents`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return await handleResponse(res);
+}
 
+/**
+ * Reminders / Waitlist
+ * POST /api/products/:id/reminders
+ */
+export async function createReminder(productId, payload) {
+  const res = await fetch(`${API_BASE}/api/products/${productId}/reminders`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload)
+  });
+  return await handleResponse(res);
+}
+
+/**
+ * System Prompt Setup
+ * POST /api/clients/:clientId/setup-prompt
+ */
+export async function setupSystemPrompt(clientId, payload) {
+  const token = import.meta.env.VITE_SYSTEM_PROMPT_TOKEN;
+
+  if (!token) {
+    throw new Error('VITE_SYSTEM_PROMPT_TOKEN is missing. Add it to your .env file.');
+  }
+
+  const res = await fetch(`${API_BASE}/api/clients/${clientId}/setup-prompt`, {
+    method: 'POST',
+    headers: {
+      'x-system-prompt-token': token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  return await handleResponse(res);
+}
+
+
+/**
+ * Get Integration Script
+ * GET /api/clients/:clientId/integration
+ */
+export async function getIntegrationScript(clientId) {
+  const res = await fetch(`${API_BASE}/api/clients/${clientId}/integration`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  return await handleResponse(res);
+}
